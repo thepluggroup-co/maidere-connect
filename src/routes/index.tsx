@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+
 import {
   Droplets,
   Hammer,
@@ -21,6 +23,18 @@ import {
 
 import logo from "@/assets/maidere-logo.asset.json";
 import heroImage from "@/assets/hero-maidere.jpg";
+import {
+  URGENCES,
+  QUARTIERS,
+  classerPrestataires,
+  delaiCible,
+  resteAvantDelai,
+  reversement,
+  xof,
+  COMMISSION_GLOBALE_PCT,
+  type NiveauUrgence,
+  type Prestataire,
+} from "@/lib/maidere";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -114,6 +128,218 @@ const testimonials = [
     role: "Responsable services généraux",
   },
 ];
+
+const demoPrestataires: Prestataire[] = [
+  {
+    id: "1",
+    nom: "Konan B.",
+    metier: "Plombier",
+    categorieId: "plomberie",
+    statut: "actif",
+    disponible: true,
+    quartier: "Cocody",
+    zonesCouverture: ["Cocody", "Riviera", "Plateau"],
+    note: 4.8,
+  },
+  {
+    id: "2",
+    nom: "Awa D.",
+    metier: "Plombière",
+    categorieId: "plomberie",
+    statut: "verifie",
+    disponible: true,
+    quartier: "Yopougon",
+    zonesCouverture: ["Yopougon", "Attécoubé"],
+    note: 4.5,
+  },
+  {
+    id: "3",
+    nom: "Ismaël T.",
+    metier: "Bricoleur",
+    categorieId: "bricolage",
+    statut: "actif",
+    disponible: true,
+    quartier: "Marcory",
+    zonesCouverture: ["Marcory", "Treichville", "Koumassi"],
+    note: 4.2,
+  },
+  {
+    id: "4",
+    nom: "Fatou S.",
+    metier: "Couturière",
+    categorieId: "couture",
+    statut: "actif",
+    disponible: true,
+    quartier: "Adjamé",
+    zonesCouverture: ["Adjamé", "Plateau"],
+    note: 4.9,
+  },
+  {
+    id: "5",
+    nom: "Yao K.",
+    metier: "Polyvalent",
+    categorieId: null,
+    statut: "verifie",
+    disponible: true,
+    quartier: "Abobo",
+    zonesCouverture: ["Abobo", "Anyama"],
+    note: 3.9,
+  },
+];
+
+const categoriesDemo = [
+  { id: "plomberie", label: "Plomberie" },
+  { id: "bricolage", label: "Bricolage" },
+  { id: "couture", label: "Couture" },
+];
+
+function MatchingDemo() {
+  const [categorieId, setCategorieId] = useState("plomberie");
+  const [quartier, setQuartier] = useState("Cocody");
+  const [urgence, setUrgence] = useState<NiveauUrgence>("immediate");
+
+  const resultats = useMemo(
+    () => classerPrestataires({ categorieId, quartier }, demoPrestataires).slice(0, 3),
+    [categorieId, quartier],
+  );
+
+  const cible = useMemo(() => delaiCible(new Date(), urgence), [urgence]);
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+      <div className="rounded-3xl border border-border bg-card p-6">
+        <div className="space-y-4">
+          <label className="block text-sm font-semibold text-primary">
+            Service
+            <select
+              value={categorieId}
+              onChange={(e) => setCategorieId(e.target.value)}
+              className="mt-2 w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {categoriesDemo.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm font-semibold text-primary">
+            Quartier
+            <select
+              value={quartier}
+              onChange={(e) => setQuartier(e.target.value)}
+              className="mt-2 w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {Object.keys(QUARTIERS).map((q) => (
+                <option key={q} value={q}>
+                  {q}
+                </option>
+              ))}
+            </select>
+          </label>
+          <fieldset>
+            <legend className="text-sm font-semibold text-primary">Urgence</legend>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {(Object.keys(URGENCES) as NiveauUrgence[]).map((u) => (
+                <button
+                  key={u}
+                  type="button"
+                  onClick={() => setUrgence(u)}
+                  className={`rounded-full px-4 py-2 text-xs font-bold transition-colors ${
+                    urgence === u
+                      ? "bg-primary text-primary-foreground"
+                      : "border border-border bg-background text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  {URGENCES[u].libelle}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          <p className="rounded-2xl bg-muted/70 px-4 py-3 text-xs text-muted-foreground">
+            Engagement de prise en charge :{" "}
+            <span className={`font-bold ${URGENCES[urgence].ton}`}>
+              {URGENCES[urgence].delaiHeures} h
+            </span>{" "}
+            — échéance {resteAvantDelai(cible)}.
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {resultats.length === 0 && (
+          <p className="rounded-3xl border border-border bg-card p-6 text-sm text-muted-foreground">
+            Aucun prestataire disponible sur ce croisement pour l'instant.
+          </p>
+        )}
+        {resultats.map((p, i) => (
+          <div
+            key={p.id}
+            className="flex items-center gap-4 rounded-3xl border border-border bg-card p-5"
+          >
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary text-sm font-extrabold text-primary-foreground">
+              {i + 1}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold text-primary">
+                {p.nom} · <span className="font-medium text-muted-foreground">{p.metier}</span>
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{p.raisons.join(" · ")}</p>
+            </div>
+            <div className="shrink-0 text-right">
+              <p className="text-xl font-extrabold text-secondary">{p.score}</p>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">score</p>
+            </div>
+          </div>
+        ))}
+        <p className="px-2 text-xs text-muted-foreground">
+          Classement indicatif : proximité, métier, zone couverte et note. Le choix final vous
+          revient.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function CommissionDemo() {
+  const [montant, setMontant] = useState(25000);
+  const { montantCommission, montantPrestataire } = reversement(montant);
+
+  return (
+    <div className="rounded-3xl border border-border bg-card p-6 lg:p-8">
+      <label className="block text-sm font-semibold text-primary" htmlFor="montant">
+        Montant de l'intervention
+      </label>
+      <input
+        id="montant"
+        type="range"
+        min={5000}
+        max={500000}
+        step={5000}
+        value={montant}
+        onChange={(e) => setMontant(Number(e.target.value))}
+        className="mt-4 w-full accent-[oklch(0.65_0.184_139)]"
+      />
+      <p className="mt-3 text-3xl font-extrabold text-primary">{xof(montant)}</p>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <div className="rounded-2xl bg-secondary/10 p-4">
+          <p className="text-xs font-semibold uppercase tracking-widest text-secondary">
+            Reversé au prestataire
+          </p>
+          <p className="mt-1 text-xl font-extrabold text-primary">{xof(montantPrestataire)}</p>
+        </div>
+        <div className="rounded-2xl bg-muted p-4">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Commission MAIDERE ({COMMISSION_GLOBALE_PCT} %)
+          </p>
+          <p className="mt-1 text-xl font-extrabold text-primary">{xof(montantCommission)}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 
 function Landing() {
   return (
