@@ -126,7 +126,7 @@ function Landing() {
               alt="Logo MAIDERE"
               width={44}
               height={44}
-              className="h-11 w-11 shrink-0 rounded-xl object-cover object-top"
+              className="h-11 w-11 shrink-0 rounded-xl bg-card object-contain p-0.5"
             />
             <span className="min-w-0">
               <span className="block truncate text-lg font-extrabold tracking-tight text-primary">
@@ -400,7 +400,7 @@ function Landing() {
                 width={40}
                 height={40}
                 loading="lazy"
-                className="h-10 w-10 rounded-xl object-cover object-top"
+                className="h-10 w-10 rounded-xl bg-card object-contain p-0.5"
               />
               <span className="text-lg font-extrabold">MAIDERE</span>
             </div>
