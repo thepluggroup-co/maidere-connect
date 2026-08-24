@@ -23,6 +23,18 @@ import {
 
 import logo from "@/assets/maidere-logo.asset.json";
 import heroImage from "@/assets/hero-maidere.jpg";
+import {
+  URGENCES,
+  QUARTIERS,
+  classerPrestataires,
+  delaiCible,
+  resteAvantDelai,
+  reversement,
+  xof,
+  COMMISSION_GLOBALE_PCT,
+  type NiveauUrgence,
+  type Prestataire,
+} from "@/lib/maidere";
 
 export const Route = createFileRoute("/")({
   head: () => ({
