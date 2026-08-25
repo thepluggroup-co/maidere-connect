@@ -1,7 +1,9 @@
 /**
- * Logique métier MAIDERE adaptée depuis la console MAIDERES.
- * Adaptations : devise XOF (FCFA) et repères de quartiers d'Abidjan (Côte d'Ivoire).
+ * Logique métier MAIDERES adaptée depuis la console MAIDERES.
+ * Couverture : Douala et Yaoundé (Cameroun, XAF) et Abidjan (Côte d'Ivoire, XOF).
+ * Les deux zones utilisent le franc CFA, affiché « FCFA ».
  */
+
 
 /* ---------------------------------- Format --------------------------------- */
 
