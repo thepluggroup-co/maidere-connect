@@ -131,8 +131,10 @@ const normalise = (s: string) =>
   s
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/gi, "")
     .toLowerCase()
     .trim();
+
 
 export function coordsQuartier(nom: string) {
   const cible = normalise(nom);
