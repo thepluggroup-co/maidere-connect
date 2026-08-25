@@ -188,17 +188,23 @@ export function classerPrestataires(
   prestataires: Prestataire[],
 ): PrestataireClasse[] {
   const posDemande = coordsQuartier(demande.quartier);
+  const villeDemande = posDemande?.ville ?? null;
 
   return prestataires
-    .filter(
-      (p) =>
+    .filter((p) => {
+      const posP = coordsQuartier(p.quartier);
+      const memeVille = !villeDemande || !posP || posP.ville === villeDemande;
+      return (
         (p.statut === "actif" || p.statut === "verifie") &&
         p.disponible &&
-        (p.categorieId === null || p.categorieId === demande.categorieId),
-    )
+        memeVille &&
+        (p.categorieId === null || p.categorieId === demande.categorieId)
+      );
+    })
     .map((p) => {
       let score = 40;
       const raisons: string[] = [];
+
 
       if (p.categorieId === demande.categorieId) {
         score += 12;
