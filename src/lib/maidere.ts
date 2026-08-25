@@ -32,10 +32,11 @@ export const URGENCES: Record<
   NiveauUrgence,
   { libelle: string; poids: number; delaiHeures: number; ton: string }
 > = {
-  immediate: { libelle: "Immédiate", poids: 0, delaiHeures: 2, ton: "text-destructive" },
-  urgent: { libelle: "Urgent", poids: 1, delaiHeures: 24, ton: "text-brand-orange" },
-  planifie: { libelle: "Planifié", poids: 2, delaiHeures: 72, ton: "text-brand-sky" },
+  immediate: { libelle: "Immédiate", poids: 0, delaiHeures: 2, ton: "text-etat-litige-fg" },
+  urgent: { libelle: "Urgent", poids: 1, delaiHeures: 24, ton: "text-etat-attente-fg" },
+  planifie: { libelle: "Planifié", poids: 2, delaiHeures: 72, ton: "text-etat-cours-fg" },
 };
+
 
 /** Délai cible SLA à partir de la création. */
 export function delaiCible(creation: Date, urgence: NiveauUrgence): Date {
