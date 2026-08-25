@@ -68,25 +68,64 @@ export function resteAvantDelai(cible: Date | null, maintenant = new Date()): st
   return diff < 0 ? `retard ${texte}` : `dans ${texte}`;
 }
 
-/* -------------------------- Géolocalisation Abidjan ------------------------- */
+/* --------------- Géolocalisation Douala · Yaoundé · Abidjan ---------------- */
 
-export const QUARTIERS: Record<string, { lat: number; lng: number }> = {
-  Plateau: { lat: 5.3247, lng: -4.0227 },
-  Cocody: { lat: 5.3548, lng: -3.9877 },
-  "Riviera": { lat: 5.3607, lng: -3.9401 },
-  Angré: { lat: 5.3949, lng: -3.9822 },
-  Marcory: { lat: 5.3007, lng: -3.9857 },
-  Treichville: { lat: 5.2933, lng: -4.0106 },
-  Koumassi: { lat: 5.2924, lng: -3.9508 },
-  "Port-Bouët": { lat: 5.2589, lng: -3.9264 },
-  Yopougon: { lat: 5.3364, lng: -4.0864 },
-  Abobo: { lat: 5.4189, lng: -4.0157 },
-  Adjamé: { lat: 5.3628, lng: -4.0244 },
-  Attécoubé: { lat: 5.3396, lng: -4.0432 },
-  Bingerville: { lat: 5.3556, lng: -3.8853 },
-  Songon: { lat: 5.3122, lng: -4.2497 },
-  Anyama: { lat: 5.4947, lng: -4.0517 },
+export type Ville = "Douala" | "Yaoundé" | "Abidjan";
+
+export const VILLES: { nom: Ville; pays: string; devise: "XAF" | "XOF" }[] = [
+  { nom: "Douala", pays: "Cameroun", devise: "XAF" },
+  { nom: "Yaoundé", pays: "Cameroun", devise: "XAF" },
+  { nom: "Abidjan", pays: "Côte d'Ivoire", devise: "XOF" },
+];
+
+export const QUARTIERS: Record<string, { lat: number; lng: number; ville: Ville }> = {
+  /* Douala */
+  Bonapriso: { lat: 4.0261, lng: 9.7019, ville: "Douala" },
+  Bonanjo: { lat: 4.0447, lng: 9.6884, ville: "Douala" },
+  Akwa: { lat: 4.0511, lng: 9.7009, ville: "Douala" },
+  Bonamoussadi: { lat: 4.0947, lng: 9.7391, ville: "Douala" },
+  Deïdo: { lat: 4.0642, lng: 9.7136, ville: "Douala" },
+  Makepe: { lat: 4.0819, lng: 9.7442, ville: "Douala" },
+  "New Bell": { lat: 4.0342, lng: 9.7167, ville: "Douala" },
+  Bepanda: { lat: 4.0672, lng: 9.7331, ville: "Douala" },
+  Logbessou: { lat: 4.0906, lng: 9.7758, ville: "Douala" },
+  Bonabéri: { lat: 4.0736, lng: 9.6708, ville: "Douala" },
+  /* Yaoundé */
+  Bastos: { lat: 3.8917, lng: 11.5089, ville: "Yaoundé" },
+  Nlongkak: { lat: 3.8836, lng: 11.5169, ville: "Yaoundé" },
+  Mvan: { lat: 3.8189, lng: 11.5306, ville: "Yaoundé" },
+  Essos: { lat: 3.8783, lng: 11.5364, ville: "Yaoundé" },
+  Mvog_Mbi: { lat: 3.8558, lng: 11.5236, ville: "Yaoundé" },
+  Biyem_Assi: { lat: 3.8331, lng: 11.4711, ville: "Yaoundé" },
+  Ngousso: { lat: 3.9022, lng: 11.5442, ville: "Yaoundé" },
+  Odza: { lat: 3.8114, lng: 11.5486, ville: "Yaoundé" },
+  Nsimeyong: { lat: 3.8347, lng: 11.4989, ville: "Yaoundé" },
+  Emana: { lat: 3.9422, lng: 11.5175, ville: "Yaoundé" },
+  /* Abidjan */
+  Plateau: { lat: 5.3247, lng: -4.0227, ville: "Abidjan" },
+  Cocody: { lat: 5.3548, lng: -3.9877, ville: "Abidjan" },
+  Riviera: { lat: 5.3607, lng: -3.9401, ville: "Abidjan" },
+  Angré: { lat: 5.3949, lng: -3.9822, ville: "Abidjan" },
+  Marcory: { lat: 5.3007, lng: -3.9857, ville: "Abidjan" },
+  Treichville: { lat: 5.2933, lng: -4.0106, ville: "Abidjan" },
+  Koumassi: { lat: 5.2924, lng: -3.9508, ville: "Abidjan" },
+  "Port-Bouët": { lat: 5.2589, lng: -3.9264, ville: "Abidjan" },
+  Yopougon: { lat: 5.3364, lng: -4.0864, ville: "Abidjan" },
+  Abobo: { lat: 5.4189, lng: -4.0157, ville: "Abidjan" },
+  Adjamé: { lat: 5.3628, lng: -4.0244, ville: "Abidjan" },
+  Attécoubé: { lat: 5.3396, lng: -4.0432, ville: "Abidjan" },
 };
+
+export function quartiersParVille(ville: Ville): string[] {
+  return Object.entries(QUARTIERS)
+    .filter(([, v]) => v.ville === ville)
+    .map(([k]) => k.replace(/_/g, "-"));
+}
+
+export function villeDuQuartier(nom: string): Ville | null {
+  return coordsQuartier(nom)?.ville ?? null;
+}
+
 
 const normalise = (s: string) =>
   s
