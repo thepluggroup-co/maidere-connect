@@ -523,6 +523,61 @@ function Landing() {
           </div>
         </section>
 
+        {/* Matching & SLA */}
+        <section id="matching" className="bg-muted/60 py-16 lg:py-24">
+          <div className="mx-auto max-w-6xl px-5">
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-widest text-secondary">
+                Mise en relation
+              </p>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-primary sm:text-4xl">
+                Le bon prestataire, choisi sur des critères clairs
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                Proximité réelle (distance entre quartiers), métier, zone couverte et note client.
+                Essayez la simulation ci-dessous.
+              </p>
+            </div>
+            <div className="mt-10">
+              <MatchingDemo />
+            </div>
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+              {(Object.keys(URGENCES) as NiveauUrgence[]).map((u) => (
+                <div key={u} className="rounded-3xl border border-border bg-card p-5">
+                  <p className={`text-sm font-bold ${URGENCES[u].ton}`}>{URGENCES[u].libelle}</p>
+                  <p className="mt-1 text-2xl font-extrabold text-primary">
+                    {URGENCES[u].delaiHeures} h
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Délai cible de prise en charge
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Commission */}
+        <section id="commission" className="mx-auto max-w-6xl px-5 py-16 lg:py-24">
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-secondary">
+                Tarification
+              </p>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-primary sm:text-4xl">
+                Une commission unique de {COMMISSION_GLOBALE_PCT} %
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                Pas de frais cachés : le prestataire connaît son reversement dès l'accord, en FCFA.
+                Des règles spécifiques peuvent s'appliquer par catégorie ou par prestataire
+                partenaire.
+              </p>
+            </div>
+            <CommissionDemo />
+          </div>
+        </section>
+
+
         {/* Testimonials */}
         <section className="bg-muted/60 py-16 lg:py-24">
           <div className="mx-auto max-w-6xl px-5">
