@@ -1,7 +1,10 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-@import "@fontsource-variable/plus-jakarta-sans";
+@import "@fontsource-variable/inter";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -61,60 +64,81 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --color-brand-sky: var(--brand-sky);
-  --color-brand-orange: var(--brand-orange);
-  --color-brand-pink: var(--brand-pink);
-  --color-brand-violet: var(--brand-violet);
-  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-brand-indigo: var(--brand-indigo);
+  --color-brand-magenta: var(--brand-magenta);
+  --color-brand-gold: var(--brand-gold);
+  --color-etat-succes: var(--etat-succes);
+  --color-etat-succes-fg: var(--etat-succes-fg);
+  --color-etat-attente: var(--etat-attente);
+  --color-etat-attente-fg: var(--etat-attente-fg);
+  --color-etat-cours: var(--etat-cours);
+  --color-etat-cours-fg: var(--etat-cours-fg);
+  --color-etat-litige: var(--etat-litige);
+  --color-etat-litige-fg: var(--etat-litige-fg);
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Poppins", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
   --radius: 1rem;
-  --background: oklch(0.995 0.003 250);
-  --foreground: oklch(0.26 0.09 265);
+  /* Fond chaud #FAF8F5 */
+  --background: oklch(0.979 0.004 85);
+  /* Texte principal #1F2430 */
+  --foreground: oklch(0.276 0.019 268);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.26 0.09 265);
+  --card-foreground: oklch(0.276 0.019 268);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.26 0.09 265);
-  /* #1B2A5E */
-  --primary: oklch(0.31 0.099 268);
-  --primary-foreground: oklch(0.99 0.005 250);
-  /* #3DAE2B */
-  --secondary: oklch(0.65 0.184 139);
-  --secondary-foreground: oklch(0.99 0.005 150);
-  --muted: oklch(0.96 0.012 255);
-  --muted-foreground: oklch(0.52 0.045 262);
-  --accent: oklch(0.65 0.184 139);
-  --accent-foreground: oklch(0.99 0.005 150);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.91 0.016 258);
-  --input: oklch(0.91 0.016 258);
-  --ring: oklch(0.65 0.184 139);
-  --brand-sky: oklch(0.63 0.13 232);
-  --brand-orange: oklch(0.72 0.17 55);
-  --brand-pink: oklch(0.62 0.22 5);
-  --brand-violet: oklch(0.55 0.19 305);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --popover-foreground: oklch(0.276 0.019 268);
+  /* Indigo #254C8C */
+  --primary: oklch(0.424 0.116 264);
+  --primary-foreground: oklch(0.99 0.004 85);
+  /* Magenta-baie #A82D7E */
+  --secondary: oklch(0.494 0.181 344);
+  --secondary-foreground: oklch(0.99 0.004 85);
+  --muted: oklch(0.955 0.006 85);
+  /* Texte secondaire #5F5E5A */
+  --muted-foreground: oklch(0.523 0.007 85);
+  /* Doré marigold #F2A93B — action unique */
+  --accent: oklch(0.783 0.142 71);
+  --accent-foreground: oklch(0.34 0.06 60);
+  /* Litige #A32D2D */
+  --destructive: oklch(0.474 0.157 27);
+  --destructive-foreground: oklch(0.99 0.004 85);
+  --border: oklch(0.905 0.006 85);
+  --input: oklch(0.905 0.006 85);
+  --ring: oklch(0.494 0.181 344);
+  --brand-indigo: oklch(0.424 0.116 264);
+  --brand-magenta: oklch(0.494 0.181 344);
+  --brand-gold: oklch(0.783 0.142 71);
+  /* Couleurs sémantiques de statut */
+  --etat-succes: oklch(0.955 0.033 125);
+  --etat-succes-fg: oklch(0.451 0.126 133);
+  --etat-attente: oklch(0.953 0.033 82);
+  --etat-attente-fg: oklch(0.469 0.107 70);
+  --etat-cours: oklch(0.951 0.021 250);
+  --etat-cours-fg: oklch(0.501 0.135 251);
+  --etat-litige: oklch(0.947 0.019 25);
+  --etat-litige-fg: oklch(0.474 0.157 27);
+  --chart-1: oklch(0.424 0.116 264);
+  --chart-2: oklch(0.494 0.181 344);
+  --chart-3: oklch(0.783 0.142 71);
+  --chart-4: oklch(0.6 0.118 184.704);
+  --chart-5: oklch(0.451 0.126 133);
+  --sidebar: oklch(0.979 0.004 85);
+  --sidebar-foreground: oklch(0.276 0.019 268);
+  --sidebar-primary: oklch(0.424 0.116 264);
+  --sidebar-primary-foreground: oklch(0.99 0.004 85);
+  --sidebar-accent: oklch(0.955 0.006 85);
+  --sidebar-accent-foreground: oklch(0.424 0.116 264);
+  --sidebar-border: oklch(0.905 0.006 85);
+  --sidebar-ring: oklch(0.494 0.181 344);
 
   --gradient-brand: linear-gradient(135deg, var(--primary), var(--secondary));
-  --gradient-deep: linear-gradient(160deg, oklch(0.24 0.085 268), oklch(0.36 0.1 260));
+  --gradient-deep: linear-gradient(160deg, oklch(0.33 0.1 265), oklch(0.44 0.15 330));
   --shadow-card: 0 18px 40px -24px color-mix(in oklab, var(--primary) 45%, transparent);
   --shadow-glow: 0 24px 60px -20px color-mix(in oklab, var(--secondary) 40%, transparent);
 }
+
 
 
 .dark {
