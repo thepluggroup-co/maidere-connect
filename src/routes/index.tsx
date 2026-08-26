@@ -21,7 +21,7 @@ import {
   Mail,
 } from "lucide-react";
 
-import logo from "@/assets/maidere-logo.asset.json";
+import logo from "@/assets/maideres-logo.asset.json";
 import heroImage from "@/assets/hero-maidere.jpg";
 import {
   URGENCES,
@@ -39,13 +39,13 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MAIDERE — Tous les services près de chez vous" },
+      { title: "MAIDERES — Tous les services près de chez vous" },
       {
         name: "description",
         content:
-          "MAIDERE connecte particuliers et entreprises à des prestataires vérifiés partout en Côte d'Ivoire : plomberie, bricolage, restauration, transport et plus.",
+          "MAIDERES connecte particuliers et entreprises à des prestataires vérifiés partout en Côte d'Ivoire : plomberie, bricolage, restauration, transport et plus.",
       },
-      { property: "og:title", content: "MAIDERE — Tous les services près de chez vous" },
+      { property: "og:title", content: "MAIDERES — Tous les services près de chez vous" },
       {
         property: "og:description",
         content:
@@ -59,14 +59,14 @@ export const Route = createFileRoute("/")({
 });
 
 const services = [
-  { name: "Plomberie", icon: Droplets, tint: "bg-brand-sky" },
+  { name: "Plomberie", icon: Droplets, tint: "bg-brand-indigo" },
   { name: "Bricolage & Rénovation", icon: Hammer, tint: "bg-secondary" },
-  { name: "Restauration", icon: UtensilsCrossed, tint: "bg-brand-orange" },
-  { name: "Hébergement", icon: BedDouble, tint: "bg-brand-pink" },
-  { name: "Shopping", icon: ShoppingCart, tint: "bg-brand-violet" },
-  { name: "Transport", icon: Car, tint: "bg-brand-sky" },
+  { name: "Restauration", icon: UtensilsCrossed, tint: "bg-brand-magenta" },
+  { name: "Hébergement", icon: BedDouble, tint: "bg-brand-magenta" },
+  { name: "Shopping", icon: ShoppingCart, tint: "bg-brand-indigo" },
+  { name: "Transport", icon: Car, tint: "bg-brand-indigo" },
   { name: "Immobilier", icon: Building2, tint: "bg-primary" },
-  { name: "Couture", icon: Scissors, tint: "bg-brand-orange" },
+  { name: "Couture", icon: Scissors, tint: "bg-brand-magenta" },
 ];
 
 const trust = [
@@ -117,13 +117,13 @@ const testimonials = [
   },
   {
     quote:
-      "Depuis MAIDERE, mon atelier de couture ne manque plus de commandes. Les paiements sont clairs.",
+      "Depuis MAIDERES, mon atelier de couture ne manque plus de commandes. Les paiements sont clairs.",
     name: "Bakary T.",
     role: "Prestataire couture, Yopougon",
   },
   {
     quote:
-      "Nous gérons la maintenance de 12 agences avec MAIDERE. Délais respectés, factures nettes.",
+      "Nous gérons la maintenance de 12 agences avec MAIDERES. Délais respectés, factures nettes.",
     name: "Serge A.",
     role: "Responsable services généraux",
   },
@@ -318,7 +318,7 @@ function CommissionDemo() {
         step={5000}
         value={montant}
         onChange={(e) => setMontant(Number(e.target.value))}
-        className="mt-4 w-full accent-[oklch(0.65_0.184_139)]"
+        className="mt-4 w-full accent-[oklch(0.494_0.181_344)]"
       />
       <p className="mt-3 text-3xl font-extrabold text-primary">{xof(montant)}</p>
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -330,7 +330,7 @@ function CommissionDemo() {
         </div>
         <div className="rounded-2xl bg-muted p-4">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Commission MAIDERE ({COMMISSION_GLOBALE_PCT} %)
+            Commission MAIDERES ({COMMISSION_GLOBALE_PCT} %)
           </p>
           <p className="mt-1 text-xl font-extrabold text-primary">{xof(montantCommission)}</p>
         </div>
@@ -349,14 +349,14 @@ function Landing() {
           <a href="#top" className="flex min-w-0 items-center gap-3">
             <img
               src={logo.url}
-              alt="Logo MAIDERE"
+              alt="Logo MAIDERES"
               width={44}
               height={44}
               className="h-11 w-11 shrink-0 rounded-xl bg-card object-contain p-0.5"
             />
             <span className="min-w-0">
               <span className="block truncate text-lg font-extrabold tracking-tight text-primary">
-                MAIDERE
+                MAIDERES
               </span>
               <span className="hidden text-xs text-muted-foreground sm:block">
                 Tous les services près de chez vous
@@ -401,7 +401,7 @@ function Landing() {
                 <span className="text-secondary">près de chez vous</span>
               </h1>
               <p className="mt-5 max-w-lg text-base leading-relaxed text-primary-foreground/80 sm:text-lg">
-                MAIDERE met en relation particuliers, entreprises et organisations avec des
+                MAIDERES met en relation particuliers, entreprises et organisations avec des
                 prestataires locaux vérifiés. Une urgence ? Un professionnel intervient
                 rapidement, au juste prix en FCFA.
               </p>
@@ -435,7 +435,7 @@ function Landing() {
             <div className="relative">
               <img
                 src={heroImage}
-                alt="Prestataires MAIDERE : plombier et couturière au travail"
+                alt="Prestataires MAIDERES : plombier et couturière au travail"
                 width={1408}
                 height={1104}
                 className="w-full rounded-3xl object-cover shadow-[var(--shadow-card)]"
@@ -480,7 +480,7 @@ function Landing() {
                 Huit familles de services, un seul point d'entrée
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Du dépannage à la commande du quotidien, MAIDERE couvre les besoins des foyers
+                Du dépannage à la commande du quotidien, MAIDERES couvre les besoins des foyers
                 et des entreprises.
               </p>
             </div>
@@ -582,7 +582,7 @@ function Landing() {
         <section className="bg-muted/60 py-16 lg:py-24">
           <div className="mx-auto max-w-6xl px-5">
             <h2 className="max-w-xl text-3xl font-extrabold tracking-tight text-primary sm:text-4xl">
-              Ils utilisent MAIDERE au quotidien
+              Ils utilisent MAIDERES au quotidien
             </h2>
             <div className="mt-10 grid gap-5 md:grid-cols-3">
               {testimonials.map((t) => (
@@ -645,7 +645,7 @@ function Landing() {
                 Je suis prestataire
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Rejoignez le réseau MAIDERE : des demandes qualifiées près de votre quartier, une
+                Rejoignez le réseau MAIDERES : des demandes qualifiées près de votre quartier, une
                 commission claire et des paiements suivis en FCFA.
               </p>
               <ul className="mt-5 space-y-2 text-sm text-foreground">
@@ -661,7 +661,7 @@ function Landing() {
                 ))}
               </ul>
               <a
-                href="mailto:contact@maidere.ci"
+                href="mailto:contact@maideres.com"
                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-transform hover:-translate-y-0.5"
               >
                 Déposer ma candidature <ArrowRight className="h-4 w-4" />
@@ -677,13 +677,13 @@ function Landing() {
             <div className="flex items-center gap-3">
               <img
                 src={logo.url}
-                alt="Logo MAIDERE"
+                alt="Logo MAIDERES"
                 width={40}
                 height={40}
                 loading="lazy"
                 className="h-10 w-10 rounded-xl bg-card object-contain p-0.5"
               />
-              <span className="text-lg font-extrabold">MAIDERE</span>
+              <span className="text-lg font-extrabold">MAIDERES</span>
             </div>
             <p className="mt-4 max-w-sm text-sm text-primary-foreground/70">
               Maison de référence et de services. Prestataires vérifiés, partout en Côte
@@ -713,7 +713,7 @@ function Landing() {
                 <Phone className="h-4 w-4 shrink-0" /> +225 07 00 00 00 00
               </li>
               <li className="flex items-center gap-2">
-                <Mail className="h-4 w-4 shrink-0" /> contact@maidere.ci
+                <Mail className="h-4 w-4 shrink-0" /> contact@maideres.com
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 shrink-0" /> Abidjan, Côte d'Ivoire
@@ -722,7 +722,7 @@ function Landing() {
           </div>
         </div>
         <div className="border-t border-primary-foreground/15 px-5 py-5 text-center text-xs text-primary-foreground/60">
-          © {new Date().getFullYear()} MAIDERE — Tous les services près de chez vous.
+          © {new Date().getFullYear()} MAIDERES — Tous les services près de chez vous.
         </div>
       </footer>
     </div>
