@@ -676,7 +676,7 @@ function Landing() {
                 <input
                   type="tel"
                   required
-                  placeholder="Votre numéro (ex : 07 00 00 00 00)"
+                  placeholder="Votre numéro (ex : 6 XX XX XX XX)"
                   aria-label="Votre numéro de téléphone"
                   className="min-w-0 flex-1 rounded-full border border-primary-foreground/25 bg-primary-foreground/10 px-5 py-3 text-sm text-primary-foreground placeholder:text-primary-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary"
                 />

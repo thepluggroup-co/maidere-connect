@@ -77,17 +77,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MAIDERE — Tous les services près de chez vous" },
+      { title: "MAIDERES — Tous les services près de chez vous" },
       {
         name: "description",
         content:
-          "Plateforme ivoirienne de mise en relation avec des prestataires vérifiés : plomberie, bricolage, restauration, transport, couture et plus.",
+          "Plateforme de mise en relation avec des prestataires vérifiés à Douala, Yaoundé et Abidjan : plomberie, bricolage, restauration, transport, couture et plus.",
       },
-      { name: "author", content: "MAIDERE" },
-      { property: "og:title", content: "MAIDERE — Tous les services près de chez vous" },
+      { name: "author", content: "MAIDERES" },
+      { property: "og:title", content: "MAIDERES — Tous les services près de chez vous" },
       {
         property: "og:description",
-        content: "Prestataires vérifiés, partout en Côte d'Ivoire. Avis de confiance.",
+        content: "Prestataires vérifiés à Douala, Yaoundé et Abidjan. Avis de confiance.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -109,7 +109,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <head>
         <HeadContent />
       </head>
