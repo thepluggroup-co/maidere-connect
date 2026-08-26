@@ -78,9 +78,10 @@ const trust = [
   },
   {
     icon: MapPin,
-    title: "Partout en Côte d'Ivoire",
-    text: "Abidjan, Bouaké, Yamoussoukro, San-Pédro… un réseau de proximité, ville par ville.",
+    title: "Douala · Yaoundé · Abidjan",
+    text: "Un réseau de proximité, quartier par quartier, entre le Cameroun et la Côte d'Ivoire.",
   },
+
   {
     icon: Star,
     title: "Avis de confiance",
