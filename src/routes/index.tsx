@@ -737,12 +737,12 @@ function Landing() {
               <span className="text-lg font-extrabold">MAIDERES</span>
             </div>
             <p className="mt-4 max-w-sm text-sm text-primary-foreground/70">
-              Maison de référence et de services. Prestataires vérifiés, partout en Côte
-              d'Ivoire. Paiements en FCFA (XOF).
+              Maison de référence et de services. Prestataires vérifiés à Douala, Yaoundé et
+              Abidjan. Paiements en FCFA (XAF / XOF).
             </p>
           </div>
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest text-secondary">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-primary-foreground/90">
               Services
             </h3>
             <ul className="mt-4 space-y-2 text-sm text-primary-foreground/70">
@@ -756,21 +756,22 @@ function Landing() {
             </ul>
           </div>
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest text-secondary">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-primary-foreground/90">
               Contact
             </h3>
             <ul className="mt-4 space-y-2 text-sm text-primary-foreground/70">
               <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 shrink-0" /> +225 07 00 00 00 00
+                <Phone className="h-4 w-4 shrink-0" /> +237 6 00 00 00 00
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 shrink-0" /> contact@maideres.com
               </li>
               <li className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 shrink-0" /> Abidjan, Côte d'Ivoire
+                <MapPin className="h-4 w-4 shrink-0" /> Douala · Yaoundé · Abidjan
               </li>
             </ul>
           </div>
+
         </div>
         <div className="border-t border-primary-foreground/15 px-5 py-5 text-center text-xs text-primary-foreground/60">
           © {new Date().getFullYear()} MAIDERES — Tous les services près de chez vous.
