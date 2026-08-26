@@ -25,7 +25,8 @@ import logo from "@/assets/maideres-logo.asset.json";
 import heroImage from "@/assets/hero-maidere.jpg";
 import {
   URGENCES,
-  QUARTIERS,
+  VILLES,
+  quartiersParVille,
   classerPrestataires,
   delaiCible,
   resteAvantDelai,
@@ -34,7 +35,9 @@ import {
   COMMISSION_GLOBALE_PCT,
   type NiveauUrgence,
   type Prestataire,
+  type Ville,
 } from "@/lib/maidere";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
