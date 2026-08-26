@@ -43,13 +43,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "MAIDERES connecte particuliers et entreprises à des prestataires vérifiés partout en Côte d'Ivoire : plomberie, bricolage, restauration, transport et plus.",
+          "MAIDERES connecte particuliers et entreprises à des prestataires vérifiés à Douala, Yaoundé et Abidjan : plomberie, bricolage, restauration, transport et plus.",
       },
       { property: "og:title", content: "MAIDERES — Tous les services près de chez vous" },
       {
         property: "og:description",
         content:
-          "Trouvez un prestataire vérifié près de chez vous en Côte d'Ivoire. Interventions rapides, prix clairs en FCFA, avis de confiance.",
+          "Trouvez un prestataire vérifié près de chez vous à Douala, Yaoundé ou Abidjan. Interventions rapides, prix clairs en FCFA, avis de confiance.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -57,6 +57,7 @@ export const Route = createFileRoute("/")({
   }),
   component: Landing,
 });
+
 
 const services = [
   { name: "Plomberie", icon: Droplets, tint: "bg-brand-indigo" },
