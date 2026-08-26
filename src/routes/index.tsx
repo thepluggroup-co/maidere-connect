@@ -443,25 +443,26 @@ function Landing() {
           <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 lg:grid-cols-2 lg:py-24">
             <div className="text-primary-foreground">
               <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
-                <MapPin className="h-3.5 w-3.5" /> Côte d'Ivoire
+                <MapPin className="h-3.5 w-3.5" /> Douala · Yaoundé · Abidjan
               </span>
-              <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+              <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
                 Tous les services
                 <br />
-                <span className="text-secondary">près de chez vous</span>
+                <span className="text-accent">près de chez vous</span>
               </h1>
               <p className="mt-5 max-w-lg text-base leading-relaxed text-primary-foreground/80 sm:text-lg">
                 MAIDERES met en relation particuliers, entreprises et organisations avec des
-                prestataires locaux vérifiés. Une urgence ? Un professionnel intervient
-                rapidement, au juste prix en FCFA.
+                prestataires locaux vérifiés, au Cameroun et en Côte d'Ivoire. Une urgence ? Un
+                professionnel intervient rapidement, au juste prix en FCFA.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
                   href="#inscription"
-                  className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3 text-sm font-bold text-secondary-foreground shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-0.5"
                 >
                   Trouver un prestataire <ArrowRight className="h-4 w-4" />
                 </a>
+
                 <a
                   href="#prestataires"
                   className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
