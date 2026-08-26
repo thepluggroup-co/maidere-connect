@@ -255,19 +255,38 @@ function MatchingDemo() {
             </select>
           </label>
           <label className="block text-sm font-semibold text-primary">
+            Ville
+            <select
+              value={ville}
+              onChange={(e) => {
+                const v = e.target.value as Ville;
+                setVille(v);
+                setQuartier(quartiersParVille(v)[0] ?? "");
+              }}
+              className="mt-2 w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {VILLES.map((v) => (
+                <option key={v.nom} value={v.nom}>
+                  {v.nom} — {v.pays} ({v.devise})
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm font-semibold text-primary">
             Quartier
             <select
               value={quartier}
               onChange={(e) => setQuartier(e.target.value)}
               className="mt-2 w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm font-normal text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              {Object.keys(QUARTIERS).map((q) => (
+              {quartiers.map((q) => (
                 <option key={q} value={q}>
                   {q}
                 </option>
               ))}
             </select>
           </label>
+
           <fieldset>
             <legend className="text-sm font-semibold text-primary">Urgence</legend>
             <div className="mt-2 flex flex-wrap gap-2">
