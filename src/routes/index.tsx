@@ -113,27 +113,71 @@ const steps = [
 const testimonials = [
   {
     quote:
-      "Fuite d'eau un dimanche soir à Cocody. Un plombier vérifié était chez moi en 40 minutes.",
-    name: "Aïcha K.",
-    role: "Cliente, Abidjan",
+      "Fuite d'eau un dimanche soir à Bonapriso. Un plombier vérifié était chez moi en 40 minutes.",
+    name: "Aïcha N.",
+    role: "Cliente, Douala",
   },
   {
     quote:
       "Depuis MAIDERES, mon atelier de couture ne manque plus de commandes. Les paiements sont clairs.",
-    name: "Bakary T.",
-    role: "Prestataire couture, Yopougon",
+    name: "Estelle M.",
+    role: "Prestataire couture, Yaoundé",
   },
   {
     quote:
       "Nous gérons la maintenance de 12 agences avec MAIDERES. Délais respectés, factures nettes.",
     name: "Serge A.",
-    role: "Responsable services généraux",
+    role: "Responsable services généraux, Abidjan",
   },
 ];
 
 const demoPrestataires: Prestataire[] = [
   {
     id: "1",
+    nom: "Ekwalla J.",
+    metier: "Plombier",
+    categorieId: "plomberie",
+    statut: "actif",
+    disponible: true,
+    quartier: "Bonapriso",
+    zonesCouverture: ["Bonapriso", "Akwa", "Bonanjo"],
+    note: 4.8,
+  },
+  {
+    id: "2",
+    nom: "Njoya A.",
+    metier: "Plombier",
+    categorieId: "plomberie",
+    statut: "verifie",
+    disponible: true,
+    quartier: "Makepe",
+    zonesCouverture: ["Makepe", "Bonamoussadi", "Bepanda"],
+    note: 4.5,
+  },
+  {
+    id: "3",
+    nom: "Mballa S.",
+    metier: "Bricoleur",
+    categorieId: "bricolage",
+    statut: "actif",
+    disponible: true,
+    quartier: "Bastos",
+    zonesCouverture: ["Bastos", "Nlongkak", "Essos"],
+    note: 4.2,
+  },
+  {
+    id: "4",
+    nom: "Estelle M.",
+    metier: "Couturière",
+    categorieId: "couture",
+    statut: "actif",
+    disponible: true,
+    quartier: "Biyem_Assi",
+    zonesCouverture: ["Biyem-Assi", "Nsimeyong"],
+    note: 4.9,
+  },
+  {
+    id: "5",
     nom: "Konan B.",
     metier: "Plombier",
     categorieId: "plomberie",
@@ -141,50 +185,28 @@ const demoPrestataires: Prestataire[] = [
     disponible: true,
     quartier: "Cocody",
     zonesCouverture: ["Cocody", "Riviera", "Plateau"],
-    note: 4.8,
+    note: 4.7,
   },
   {
-    id: "2",
-    nom: "Awa D.",
-    metier: "Plombière",
-    categorieId: "plomberie",
-    statut: "verifie",
-    disponible: true,
-    quartier: "Yopougon",
-    zonesCouverture: ["Yopougon", "Attécoubé"],
-    note: 4.5,
-  },
-  {
-    id: "3",
-    nom: "Ismaël T.",
-    metier: "Bricoleur",
-    categorieId: "bricolage",
-    statut: "actif",
-    disponible: true,
-    quartier: "Marcory",
-    zonesCouverture: ["Marcory", "Treichville", "Koumassi"],
-    note: 4.2,
-  },
-  {
-    id: "4",
+    id: "6",
     nom: "Fatou S.",
     metier: "Couturière",
     categorieId: "couture",
-    statut: "actif",
+    statut: "verifie",
     disponible: true,
     quartier: "Adjamé",
     zonesCouverture: ["Adjamé", "Plateau"],
-    note: 4.9,
+    note: 4.6,
   },
   {
-    id: "5",
+    id: "7",
     nom: "Yao K.",
     metier: "Polyvalent",
     categorieId: null,
     statut: "verifie",
     disponible: true,
-    quartier: "Abobo",
-    zonesCouverture: ["Abobo", "Anyama"],
+    quartier: "Yopougon",
+    zonesCouverture: ["Yopougon", "Attécoubé"],
     note: 3.9,
   },
 ];
@@ -197,8 +219,11 @@ const categoriesDemo = [
 
 function MatchingDemo() {
   const [categorieId, setCategorieId] = useState("plomberie");
-  const [quartier, setQuartier] = useState("Cocody");
+  const [ville, setVille] = useState<Ville>("Douala");
+  const [quartier, setQuartier] = useState("Bonapriso");
   const [urgence, setUrgence] = useState<NiveauUrgence>("immediate");
+
+  const quartiers = useMemo(() => quartiersParVille(ville), [ville]);
 
   const resultats = useMemo(
     () => classerPrestataires({ categorieId, quartier }, demoPrestataires).slice(0, 3),
@@ -206,6 +231,7 @@ function MatchingDemo() {
   );
 
   const cible = useMemo(() => delaiCible(new Date(), urgence), [urgence]);
+
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
