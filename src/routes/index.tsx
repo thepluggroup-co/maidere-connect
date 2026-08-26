@@ -477,7 +477,7 @@ function Landing() {
                   ["24/7", "demandes urgentes"],
                 ].map(([v, l]) => (
                   <div key={l}>
-                    <dt className="text-2xl font-extrabold text-secondary">{v}</dt>
+                    <dt className="text-2xl font-extrabold text-primary-foreground">{v}</dt>
                     <dd className="text-xs text-primary-foreground/70">{l}</dd>
                   </div>
                 ))}
