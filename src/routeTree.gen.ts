@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthClientRouteImport } from './routes/auth.client'
+import { Route as AuthPrestataireRouteImport } from './routes/auth.prestataire'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthClientRoute = AuthClientRouteImport.update({
+  id: '/auth/client',
+  path: '/auth/client',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthPrestataireRoute = AuthPrestataireRouteImport.update({
+  id: '/auth/prestataire',
+  path: '/auth/prestataire',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth/client': typeof AuthClientRoute
+  '/auth/prestataire': typeof AuthPrestataireRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth/client': typeof AuthClientRoute
+  '/auth/prestataire': typeof AuthPrestataireRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth/client': typeof AuthClientRoute
+  '/auth/prestataire': typeof AuthPrestataireRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/auth/client' | '/auth/prestataire'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/auth/client' | '/auth/prestataire'
+  id: '__root__' | '/' | '/auth/client' | '/auth/prestataire'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthClientRoute: typeof AuthClientRoute
+  AuthPrestataireRoute: typeof AuthPrestataireRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/client': {
+      id: '/auth/client'
+      path: '/auth/client'
+      fullPath: '/auth/client'
+      preLoaderRoute: typeof AuthClientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/prestataire': {
+      id: '/auth/prestataire'
+      path: '/auth/prestataire'
+      fullPath: '/auth/prestataire'
+      preLoaderRoute: typeof AuthPrestataireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthClientRoute: AuthClientRoute,
+  AuthPrestataireRoute: AuthPrestataireRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
