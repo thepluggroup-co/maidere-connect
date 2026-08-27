@@ -14,16 +14,333 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      avis: {
+        Row: {
+          client_id: string
+          commentaire: string | null
+          created_at: string
+          id: string
+          note: number
+          prestataire_id: string
+          reponse: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          commentaire?: string | null
+          created_at?: string
+          id?: string
+          note: number
+          prestataire_id: string
+          reponse?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          commentaire?: string | null
+          created_at?: string
+          id?: string
+          note?: number
+          prestataire_id?: string
+          reponse?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "avis_prestataire_id_fkey"
+            columns: ["prestataire_id"]
+            isOneToOne: false
+            referencedRelation: "prestataires"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offres: {
+        Row: {
+          categorie: string
+          created_at: string
+          delai_heures: number
+          description: string | null
+          id: string
+          image_url: string | null
+          prestataire_id: string
+          prestations: string[]
+          prix: number
+          publie: boolean
+          titre: string
+          unite_prix: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          categorie: string
+          created_at?: string
+          delai_heures?: number
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          prestataire_id: string
+          prestations?: string[]
+          prix?: number
+          publie?: boolean
+          titre: string
+          unite_prix?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          categorie?: string
+          created_at?: string
+          delai_heures?: number
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          prestataire_id?: string
+          prestations?: string[]
+          prix?: number
+          publie?: boolean
+          titre?: string
+          unite_prix?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offres_prestataire_id_fkey"
+            columns: ["prestataire_id"]
+            isOneToOne: false
+            referencedRelation: "prestataires"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prestataires: {
+        Row: {
+          bio: string | null
+          categorie: string | null
+          created_at: string
+          disponible: boolean
+          id: string
+          metier: string
+          nom_affichage: string
+          photo_url: string | null
+          publie: boolean
+          quartier: string | null
+          telephone: string | null
+          updated_at: string
+          user_id: string
+          verifie: boolean
+          ville: string
+          zones_couverture: string[]
+        }
+        Insert: {
+          bio?: string | null
+          categorie?: string | null
+          created_at?: string
+          disponible?: boolean
+          id?: string
+          metier: string
+          nom_affichage: string
+          photo_url?: string | null
+          publie?: boolean
+          quartier?: string | null
+          telephone?: string | null
+          updated_at?: string
+          user_id: string
+          verifie?: boolean
+          ville?: string
+          zones_couverture?: string[]
+        }
+        Update: {
+          bio?: string | null
+          categorie?: string | null
+          created_at?: string
+          disponible?: boolean
+          id?: string
+          metier?: string
+          nom_affichage?: string
+          photo_url?: string | null
+          publie?: boolean
+          quartier?: string | null
+          telephone?: string | null
+          updated_at?: string
+          user_id?: string
+          verifie?: boolean
+          ville?: string
+          zones_couverture?: string[]
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          nom_complet: string
+          quartier: string | null
+          telephone: string | null
+          updated_at: string
+          ville: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id: string
+          nom_complet?: string
+          quartier?: string | null
+          telephone?: string | null
+          updated_at?: string
+          ville?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          nom_complet?: string
+          quartier?: string | null
+          telephone?: string | null
+          updated_at?: string
+          ville?: string | null
+        }
+        Relationships: []
+      }
+      promotions: {
+        Row: {
+          active: boolean
+          created_at: string
+          debut: string
+          description: string | null
+          fin: string | null
+          id: string
+          offre_id: string | null
+          prestataire_id: string
+          remise_pct: number
+          titre: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          debut?: string
+          description?: string | null
+          fin?: string | null
+          id?: string
+          offre_id?: string | null
+          prestataire_id: string
+          remise_pct?: number
+          titre: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          debut?: string
+          description?: string | null
+          fin?: string | null
+          id?: string
+          offre_id?: string | null
+          prestataire_id?: string
+          remise_pct?: number
+          titre?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promotions_offre_id_fkey"
+            columns: ["offre_id"]
+            isOneToOne: false
+            referencedRelation: "offres"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promotions_prestataire_id_fkey"
+            columns: ["prestataire_id"]
+            isOneToOne: false
+            referencedRelation: "prestataires"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      realisations: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string
+          prestataire_id: string
+          titre: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url: string
+          prestataire_id: string
+          titre?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string
+          prestataire_id?: string
+          titre?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "realisations_prestataire_id_fkey"
+            columns: ["prestataire_id"]
+            isOneToOne: false
+            referencedRelation: "prestataires"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "client" | "prestataire" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +467,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["client", "prestataire", "admin"],
+    },
   },
 } as const
