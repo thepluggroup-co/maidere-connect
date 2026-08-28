@@ -10,13 +10,26 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthClientRouteImport } from './routes/auth.client'
-import { Route as AuthPrestataireRouteImport } from './routes/auth.prestataire'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthenticatedEspaceRouteImport } from './routes/_authenticated/espace'
+import { Route as AuthClientRouteImport } from './routes/auth/client'
+import { Route as AuthPrestataireRouteImport } from './routes/auth/prestataire'
+import { Route as PrestatairesIndexRouteImport } from './routes/prestataires.index'
+import { Route as PrestatairesIdRouteImport } from './routes/prestataires.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedEspaceRoute = AuthenticatedEspaceRouteImport.update({
+  id: '/espace',
+  path: '/espace',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthClientRoute = AuthClientRouteImport.update({
   id: '/auth/client',
@@ -28,35 +41,78 @@ const AuthPrestataireRoute = AuthPrestataireRouteImport.update({
   path: '/auth/prestataire',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrestatairesIndexRoute = PrestatairesIndexRouteImport.update({
+  id: '/prestataires/',
+  path: '/prestataires/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrestatairesIdRoute = PrestatairesIdRouteImport.update({
+  id: '/prestataires/$id',
+  path: '/prestataires/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/espace': typeof AuthenticatedEspaceRoute
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
+  '/prestataires/$id': typeof PrestatairesIdRoute
+  '/prestataires/': typeof PrestatairesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/espace': typeof AuthenticatedEspaceRoute
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
+  '/prestataires/$id': typeof PrestatairesIdRoute
+  '/prestataires': typeof PrestatairesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_authenticated/espace': typeof AuthenticatedEspaceRoute
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
+  '/prestataires/$id': typeof PrestatairesIdRoute
+  '/prestataires/': typeof PrestatairesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth/client' | '/auth/prestataire'
+  fullPaths:
+    | '/'
+    | '/espace'
+    | '/auth/client'
+    | '/auth/prestataire'
+    | '/prestataires/$id'
+    | '/prestataires/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/client' | '/auth/prestataire'
-  id: '__root__' | '/' | '/auth/client' | '/auth/prestataire'
+  to:
+    | '/'
+    | '/espace'
+    | '/auth/client'
+    | '/auth/prestataire'
+    | '/prestataires/$id'
+    | '/prestataires'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/_authenticated/espace'
+    | '/auth/client'
+    | '/auth/prestataire'
+    | '/prestataires/$id'
+    | '/prestataires/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthClientRoute: typeof AuthClientRoute
   AuthPrestataireRoute: typeof AuthPrestataireRoute
+  PrestatairesIdRoute: typeof PrestatairesIdRoute
+  PrestatairesIndexRoute: typeof PrestatairesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -67,6 +123,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/espace': {
+      id: '/_authenticated/espace'
+      path: '/espace'
+      fullPath: '/espace'
+      preLoaderRoute: typeof AuthenticatedEspaceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/auth/client': {
       id: '/auth/client'
@@ -82,13 +152,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthPrestataireRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prestataires/': {
+      id: '/prestataires/'
+      path: '/prestataires'
+      fullPath: '/prestataires/'
+      preLoaderRoute: typeof PrestatairesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prestataires/$id': {
+      id: '/prestataires/$id'
+      path: '/prestataires/$id'
+      fullPath: '/prestataires/$id'
+      preLoaderRoute: typeof PrestatairesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedEspaceRoute: typeof AuthenticatedEspaceRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedEspaceRoute: AuthenticatedEspaceRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthClientRoute: AuthClientRoute,
   AuthPrestataireRoute: AuthPrestataireRoute,
+  PrestatairesIdRoute: PrestatairesIdRoute,
+  PrestatairesIndexRoute: PrestatairesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
