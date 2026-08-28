@@ -17,6 +17,7 @@ import { Route as AuthPrestataireRouteImport } from './routes/auth/prestataire'
 import { Route as PrestatairesIndexRouteImport } from './routes/prestataires.index'
 import { Route as PrestatairesIdRouteImport } from './routes/prestataires.$id'
 import { Route as AuthenticatedEspaceIndexRouteImport } from './routes/_authenticated/espace.index'
+import { Route as AuthenticatedEspaceRechercheRouteImport } from './routes/_authenticated/espace.recherche'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,12 @@ const AuthenticatedEspaceIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedEspaceRoute,
   } as any)
+const AuthenticatedEspaceRechercheRoute =
+  AuthenticatedEspaceRechercheRouteImport.update({
+    id: '/recherche',
+    path: '/recherche',
+    getParentRoute: () => AuthenticatedEspaceRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires/': typeof PrestatairesIndexRoute
+  '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/espace/': typeof AuthenticatedEspaceIndexRoute
 }
 export interface FileRoutesByTo {
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires': typeof PrestatairesIndexRoute
+  '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/espace': typeof AuthenticatedEspaceIndexRoute
 }
 export interface FileRoutesById {
@@ -85,6 +94,7 @@ export interface FileRoutesById {
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires/': typeof PrestatairesIndexRoute
+  '/_authenticated/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/_authenticated/espace/': typeof AuthenticatedEspaceIndexRoute
 }
 export interface FileRouteTypes {
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires/'
+    | '/espace/recherche'
     | '/espace/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires'
+    | '/espace/recherche'
     | '/espace'
   id:
     | '__root__'
@@ -114,6 +126,7 @@ export interface FileRouteTypes {
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires/'
+    | '/_authenticated/espace/recherche'
     | '/_authenticated/espace/'
   fileRoutesById: FileRoutesById
 }
@@ -184,14 +197,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEspaceIndexRouteImport
       parentRoute: typeof AuthenticatedEspaceRoute
     }
+    '/_authenticated/espace/recherche': {
+      id: '/_authenticated/espace/recherche'
+      path: '/recherche'
+      fullPath: '/espace/recherche'
+      preLoaderRoute: typeof AuthenticatedEspaceRechercheRouteImport
+      parentRoute: typeof AuthenticatedEspaceRoute
+    }
   }
 }
 
 interface AuthenticatedEspaceRouteChildren {
+  AuthenticatedEspaceRechercheRoute: typeof AuthenticatedEspaceRechercheRoute
   AuthenticatedEspaceIndexRoute: typeof AuthenticatedEspaceIndexRoute
 }
 
 const AuthenticatedEspaceRouteChildren: AuthenticatedEspaceRouteChildren = {
+  AuthenticatedEspaceRechercheRoute: AuthenticatedEspaceRechercheRoute,
   AuthenticatedEspaceIndexRoute: AuthenticatedEspaceIndexRoute,
 }
 
