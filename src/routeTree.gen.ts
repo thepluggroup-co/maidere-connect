@@ -10,13 +10,30 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthClientRouteImport } from './routes/auth.client'
-import { Route as AuthPrestataireRouteImport } from './routes/auth.prestataire'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthenticatedEspaceRouteImport } from './routes/_authenticated/espace'
+import { Route as AuthClientRouteImport } from './routes/auth/client'
+import { Route as AuthPrestataireRouteImport } from './routes/auth/prestataire'
+import { Route as PrestatairesIndexRouteImport } from './routes/prestataires.index'
+import { Route as PrestatairesIdRouteImport } from './routes/prestataires.$id'
+import { Route as AuthenticatedEspaceIndexRouteImport } from './routes/_authenticated/espace.index'
+import { Route as AuthenticatedEspaceAvisRouteImport } from './routes/_authenticated/espace.avis'
+import { Route as AuthenticatedEspacePromotionsRouteImport } from './routes/_authenticated/espace.promotions'
+import { Route as AuthenticatedEspaceRechercheRouteImport } from './routes/_authenticated/espace.recherche'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedEspaceRoute = AuthenticatedEspaceRouteImport.update({
+  id: '/espace',
+  path: '/espace',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthClientRoute = AuthClientRouteImport.update({
   id: '/auth/client',
@@ -28,35 +45,123 @@ const AuthPrestataireRoute = AuthPrestataireRouteImport.update({
   path: '/auth/prestataire',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrestatairesIndexRoute = PrestatairesIndexRouteImport.update({
+  id: '/prestataires/',
+  path: '/prestataires/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrestatairesIdRoute = PrestatairesIdRouteImport.update({
+  id: '/prestataires/$id',
+  path: '/prestataires/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedEspaceIndexRoute =
+  AuthenticatedEspaceIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedEspaceRoute,
+  } as any)
+const AuthenticatedEspaceAvisRoute = AuthenticatedEspaceAvisRouteImport.update({
+  id: '/avis',
+  path: '/avis',
+  getParentRoute: () => AuthenticatedEspaceRoute,
+} as any)
+const AuthenticatedEspacePromotionsRoute =
+  AuthenticatedEspacePromotionsRouteImport.update({
+    id: '/promotions',
+    path: '/promotions',
+    getParentRoute: () => AuthenticatedEspaceRoute,
+  } as any)
+const AuthenticatedEspaceRechercheRoute =
+  AuthenticatedEspaceRechercheRouteImport.update({
+    id: '/recherche',
+    path: '/recherche',
+    getParentRoute: () => AuthenticatedEspaceRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/espace': typeof AuthenticatedEspaceRouteWithChildren
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
+  '/prestataires/$id': typeof PrestatairesIdRoute
+  '/prestataires/': typeof PrestatairesIndexRoute
+  '/espace/avis': typeof AuthenticatedEspaceAvisRoute
+  '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
+  '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
+  '/espace/': typeof AuthenticatedEspaceIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
+  '/prestataires/$id': typeof PrestatairesIdRoute
+  '/prestataires': typeof PrestatairesIndexRoute
+  '/espace/avis': typeof AuthenticatedEspaceAvisRoute
+  '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
+  '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
+  '/espace': typeof AuthenticatedEspaceIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_authenticated/espace': typeof AuthenticatedEspaceRouteWithChildren
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
+  '/prestataires/$id': typeof PrestatairesIdRoute
+  '/prestataires/': typeof PrestatairesIndexRoute
+  '/_authenticated/espace/avis': typeof AuthenticatedEspaceAvisRoute
+  '/_authenticated/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
+  '/_authenticated/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
+  '/_authenticated/espace/': typeof AuthenticatedEspaceIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth/client' | '/auth/prestataire'
+  fullPaths:
+    | '/'
+    | '/espace'
+    | '/auth/client'
+    | '/auth/prestataire'
+    | '/prestataires/$id'
+    | '/prestataires/'
+    | '/espace/avis'
+    | '/espace/promotions'
+    | '/espace/recherche'
+    | '/espace/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/client' | '/auth/prestataire'
-  id: '__root__' | '/' | '/auth/client' | '/auth/prestataire'
+  to:
+    | '/'
+    | '/auth/client'
+    | '/auth/prestataire'
+    | '/prestataires/$id'
+    | '/prestataires'
+    | '/espace/avis'
+    | '/espace/promotions'
+    | '/espace/recherche'
+    | '/espace'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/_authenticated/espace'
+    | '/auth/client'
+    | '/auth/prestataire'
+    | '/prestataires/$id'
+    | '/prestataires/'
+    | '/_authenticated/espace/avis'
+    | '/_authenticated/espace/promotions'
+    | '/_authenticated/espace/recherche'
+    | '/_authenticated/espace/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthClientRoute: typeof AuthClientRoute
   AuthPrestataireRoute: typeof AuthPrestataireRoute
+  PrestatairesIdRoute: typeof PrestatairesIdRoute
+  PrestatairesIndexRoute: typeof PrestatairesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -67,6 +172,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/espace': {
+      id: '/_authenticated/espace'
+      path: '/espace'
+      fullPath: '/espace'
+      preLoaderRoute: typeof AuthenticatedEspaceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/auth/client': {
       id: '/auth/client'
@@ -82,13 +201,86 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthPrestataireRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prestataires/': {
+      id: '/prestataires/'
+      path: '/prestataires'
+      fullPath: '/prestataires/'
+      preLoaderRoute: typeof PrestatairesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prestataires/$id': {
+      id: '/prestataires/$id'
+      path: '/prestataires/$id'
+      fullPath: '/prestataires/$id'
+      preLoaderRoute: typeof PrestatairesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/espace/': {
+      id: '/_authenticated/espace/'
+      path: '/'
+      fullPath: '/espace/'
+      preLoaderRoute: typeof AuthenticatedEspaceIndexRouteImport
+      parentRoute: typeof AuthenticatedEspaceRoute
+    }
+    '/_authenticated/espace/avis': {
+      id: '/_authenticated/espace/avis'
+      path: '/avis'
+      fullPath: '/espace/avis'
+      preLoaderRoute: typeof AuthenticatedEspaceAvisRouteImport
+      parentRoute: typeof AuthenticatedEspaceRoute
+    }
+    '/_authenticated/espace/promotions': {
+      id: '/_authenticated/espace/promotions'
+      path: '/promotions'
+      fullPath: '/espace/promotions'
+      preLoaderRoute: typeof AuthenticatedEspacePromotionsRouteImport
+      parentRoute: typeof AuthenticatedEspaceRoute
+    }
+    '/_authenticated/espace/recherche': {
+      id: '/_authenticated/espace/recherche'
+      path: '/recherche'
+      fullPath: '/espace/recherche'
+      preLoaderRoute: typeof AuthenticatedEspaceRechercheRouteImport
+      parentRoute: typeof AuthenticatedEspaceRoute
+    }
   }
 }
 
+interface AuthenticatedEspaceRouteChildren {
+  AuthenticatedEspaceAvisRoute: typeof AuthenticatedEspaceAvisRoute
+  AuthenticatedEspacePromotionsRoute: typeof AuthenticatedEspacePromotionsRoute
+  AuthenticatedEspaceRechercheRoute: typeof AuthenticatedEspaceRechercheRoute
+  AuthenticatedEspaceIndexRoute: typeof AuthenticatedEspaceIndexRoute
+}
+
+const AuthenticatedEspaceRouteChildren: AuthenticatedEspaceRouteChildren = {
+  AuthenticatedEspaceAvisRoute: AuthenticatedEspaceAvisRoute,
+  AuthenticatedEspacePromotionsRoute: AuthenticatedEspacePromotionsRoute,
+  AuthenticatedEspaceRechercheRoute: AuthenticatedEspaceRechercheRoute,
+  AuthenticatedEspaceIndexRoute: AuthenticatedEspaceIndexRoute,
+}
+
+const AuthenticatedEspaceRouteWithChildren =
+  AuthenticatedEspaceRoute._addFileChildren(AuthenticatedEspaceRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedEspaceRoute: typeof AuthenticatedEspaceRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedEspaceRoute: AuthenticatedEspaceRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthClientRoute: AuthClientRoute,
   AuthPrestataireRoute: AuthPrestataireRoute,
+  PrestatairesIdRoute: PrestatairesIdRoute,
+  PrestatairesIndexRoute: PrestatairesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
