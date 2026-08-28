@@ -16,6 +16,7 @@ import { Route as AuthClientRouteImport } from './routes/auth/client'
 import { Route as AuthPrestataireRouteImport } from './routes/auth/prestataire'
 import { Route as PrestatairesIndexRouteImport } from './routes/prestataires.index'
 import { Route as PrestatairesIdRouteImport } from './routes/prestataires.$id'
+import { Route as AuthenticatedEspaceIndexRouteImport } from './routes/_authenticated/espace.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -51,32 +52,40 @@ const PrestatairesIdRoute = PrestatairesIdRouteImport.update({
   path: '/prestataires/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedEspaceIndexRoute =
+  AuthenticatedEspaceIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedEspaceRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/espace': typeof AuthenticatedEspaceRoute
+  '/espace': typeof AuthenticatedEspaceRouteWithChildren
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires/': typeof PrestatairesIndexRoute
+  '/espace/': typeof AuthenticatedEspaceIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/espace': typeof AuthenticatedEspaceRoute
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires': typeof PrestatairesIndexRoute
+  '/espace': typeof AuthenticatedEspaceIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/_authenticated/espace': typeof AuthenticatedEspaceRoute
+  '/_authenticated/espace': typeof AuthenticatedEspaceRouteWithChildren
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires/': typeof PrestatairesIndexRoute
+  '/_authenticated/espace/': typeof AuthenticatedEspaceIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -87,14 +96,15 @@ export interface FileRouteTypes {
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires/'
+    | '/espace/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/espace'
     | '/auth/client'
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires'
+    | '/espace'
   id:
     | '__root__'
     | '/'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires/'
+    | '/_authenticated/espace/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -166,15 +177,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrestatairesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/espace/': {
+      id: '/_authenticated/espace/'
+      path: '/'
+      fullPath: '/espace/'
+      preLoaderRoute: typeof AuthenticatedEspaceIndexRouteImport
+      parentRoute: typeof AuthenticatedEspaceRoute
+    }
   }
 }
 
+interface AuthenticatedEspaceRouteChildren {
+  AuthenticatedEspaceIndexRoute: typeof AuthenticatedEspaceIndexRoute
+}
+
+const AuthenticatedEspaceRouteChildren: AuthenticatedEspaceRouteChildren = {
+  AuthenticatedEspaceIndexRoute: AuthenticatedEspaceIndexRoute,
+}
+
+const AuthenticatedEspaceRouteWithChildren =
+  AuthenticatedEspaceRoute._addFileChildren(AuthenticatedEspaceRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedEspaceRoute: typeof AuthenticatedEspaceRoute
+  AuthenticatedEspaceRoute: typeof AuthenticatedEspaceRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedEspaceRoute: AuthenticatedEspaceRoute,
+  AuthenticatedEspaceRoute: AuthenticatedEspaceRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
