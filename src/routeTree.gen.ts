@@ -17,6 +17,7 @@ import { Route as AuthPrestataireRouteImport } from './routes/auth/prestataire'
 import { Route as PrestatairesIndexRouteImport } from './routes/prestataires.index'
 import { Route as PrestatairesIdRouteImport } from './routes/prestataires.$id'
 import { Route as AuthenticatedEspaceIndexRouteImport } from './routes/_authenticated/espace.index'
+import { Route as AuthenticatedEspacePromotionsRouteImport } from './routes/_authenticated/espace.promotions'
 import { Route as AuthenticatedEspaceRechercheRouteImport } from './routes/_authenticated/espace.recherche'
 
 const IndexRoute = IndexRouteImport.update({
@@ -59,6 +60,12 @@ const AuthenticatedEspaceIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedEspaceRoute,
   } as any)
+const AuthenticatedEspacePromotionsRoute =
+  AuthenticatedEspacePromotionsRouteImport.update({
+    id: '/promotions',
+    path: '/promotions',
+    getParentRoute: () => AuthenticatedEspaceRoute,
+  } as any)
 const AuthenticatedEspaceRechercheRoute =
   AuthenticatedEspaceRechercheRouteImport.update({
     id: '/recherche',
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires/': typeof PrestatairesIndexRoute
+  '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/espace/': typeof AuthenticatedEspaceIndexRoute
 }
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires': typeof PrestatairesIndexRoute
+  '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/espace': typeof AuthenticatedEspaceIndexRoute
 }
@@ -94,6 +103,7 @@ export interface FileRoutesById {
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires/': typeof PrestatairesIndexRoute
+  '/_authenticated/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/_authenticated/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/_authenticated/espace/': typeof AuthenticatedEspaceIndexRoute
 }
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires/'
+    | '/espace/promotions'
     | '/espace/recherche'
     | '/espace/'
   fileRoutesByTo: FileRoutesByTo
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires'
+    | '/espace/promotions'
     | '/espace/recherche'
     | '/espace'
   id:
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires/'
+    | '/_authenticated/espace/promotions'
     | '/_authenticated/espace/recherche'
     | '/_authenticated/espace/'
   fileRoutesById: FileRoutesById
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEspaceIndexRouteImport
       parentRoute: typeof AuthenticatedEspaceRoute
     }
+    '/_authenticated/espace/promotions': {
+      id: '/_authenticated/espace/promotions'
+      path: '/promotions'
+      fullPath: '/espace/promotions'
+      preLoaderRoute: typeof AuthenticatedEspacePromotionsRouteImport
+      parentRoute: typeof AuthenticatedEspaceRoute
+    }
     '/_authenticated/espace/recherche': {
       id: '/_authenticated/espace/recherche'
       path: '/recherche'
@@ -208,11 +228,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedEspaceRouteChildren {
+  AuthenticatedEspacePromotionsRoute: typeof AuthenticatedEspacePromotionsRoute
   AuthenticatedEspaceRechercheRoute: typeof AuthenticatedEspaceRechercheRoute
   AuthenticatedEspaceIndexRoute: typeof AuthenticatedEspaceIndexRoute
 }
 
 const AuthenticatedEspaceRouteChildren: AuthenticatedEspaceRouteChildren = {
+  AuthenticatedEspacePromotionsRoute: AuthenticatedEspacePromotionsRoute,
   AuthenticatedEspaceRechercheRoute: AuthenticatedEspaceRechercheRoute,
   AuthenticatedEspaceIndexRoute: AuthenticatedEspaceIndexRoute,
 }
