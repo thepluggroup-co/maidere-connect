@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 import {
@@ -413,7 +413,25 @@ function Landing() {
               </span>
             </span>
           </a>
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-4">
+            <Link
+              to="/prestataires"
+              className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:block"
+            >
+              Prestataires
+            </Link>
+            <Link
+              to="/auth/client"
+              className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:block"
+            >
+              Espace client
+            </Link>
+            <Link
+              to="/auth/prestataire"
+              className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:block"
+            >
+              Espace prestataire
+            </Link>
             <a
               href="#services"
               className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:block"
