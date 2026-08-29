@@ -23,6 +23,7 @@ import { Route as AuthenticatedEspaceProfilRouteImport } from './routes/_authent
 import { Route as AuthenticatedEspacePromotionsRouteImport } from './routes/_authenticated/espace.promotions'
 import { Route as AuthenticatedEspaceRechercheRouteImport } from './routes/_authenticated/espace.recherche'
 import { Route as AuthenticatedProIndexRouteImport } from './routes/_authenticated/pro.index'
+import { Route as AuthenticatedProOffresRouteImport } from './routes/_authenticated/pro.offres'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -97,6 +98,11 @@ const AuthenticatedProIndexRoute = AuthenticatedProIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedProRoute,
 } as any)
+const AuthenticatedProOffresRoute = AuthenticatedProOffresRouteImport.update({
+  id: '/offres',
+  path: '/offres',
+  getParentRoute: () => AuthenticatedProRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/espace/profil': typeof AuthenticatedEspaceProfilRoute
   '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
+  '/pro/offres': typeof AuthenticatedProOffresRoute
   '/espace/': typeof AuthenticatedEspaceIndexRoute
   '/pro/': typeof AuthenticatedProIndexRoute
 }
@@ -123,6 +130,7 @@ export interface FileRoutesByTo {
   '/espace/profil': typeof AuthenticatedEspaceProfilRoute
   '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
+  '/pro/offres': typeof AuthenticatedProOffresRoute
   '/espace': typeof AuthenticatedEspaceIndexRoute
   '/pro': typeof AuthenticatedProIndexRoute
 }
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/_authenticated/espace/profil': typeof AuthenticatedEspaceProfilRoute
   '/_authenticated/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/_authenticated/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
+  '/_authenticated/pro/offres': typeof AuthenticatedProOffresRoute
   '/_authenticated/espace/': typeof AuthenticatedEspaceIndexRoute
   '/_authenticated/pro/': typeof AuthenticatedProIndexRoute
 }
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/espace/profil'
     | '/espace/promotions'
     | '/espace/recherche'
+    | '/pro/offres'
     | '/espace/'
     | '/pro/'
   fileRoutesByTo: FileRoutesByTo
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/espace/profil'
     | '/espace/promotions'
     | '/espace/recherche'
+    | '/pro/offres'
     | '/espace'
     | '/pro'
   id:
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/_authenticated/espace/profil'
     | '/_authenticated/espace/promotions'
     | '/_authenticated/espace/recherche'
+    | '/_authenticated/pro/offres'
     | '/_authenticated/espace/'
     | '/_authenticated/pro/'
   fileRoutesById: FileRoutesById
@@ -299,6 +311,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProIndexRouteImport
       parentRoute: typeof AuthenticatedProRoute
     }
+    '/_authenticated/pro/offres': {
+      id: '/_authenticated/pro/offres'
+      path: '/offres'
+      fullPath: '/pro/offres'
+      preLoaderRoute: typeof AuthenticatedProOffresRouteImport
+      parentRoute: typeof AuthenticatedProRoute
+    }
   }
 }
 
@@ -322,10 +341,12 @@ const AuthenticatedEspaceRouteWithChildren =
   AuthenticatedEspaceRoute._addFileChildren(AuthenticatedEspaceRouteChildren)
 
 interface AuthenticatedProRouteChildren {
+  AuthenticatedProOffresRoute: typeof AuthenticatedProOffresRoute
   AuthenticatedProIndexRoute: typeof AuthenticatedProIndexRoute
 }
 
 const AuthenticatedProRouteChildren: AuthenticatedProRouteChildren = {
+  AuthenticatedProOffresRoute: AuthenticatedProOffresRoute,
   AuthenticatedProIndexRoute: AuthenticatedProIndexRoute,
 }
 
