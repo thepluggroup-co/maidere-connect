@@ -23,6 +23,7 @@ import { Route as AuthenticatedEspaceProfilRouteImport } from './routes/_authent
 import { Route as AuthenticatedEspacePromotionsRouteImport } from './routes/_authenticated/espace.promotions'
 import { Route as AuthenticatedEspaceRechercheRouteImport } from './routes/_authenticated/espace.recherche'
 import { Route as AuthenticatedProIndexRouteImport } from './routes/_authenticated/pro.index'
+import { Route as AuthenticatedProAvisRouteImport } from './routes/_authenticated/pro.avis'
 import { Route as AuthenticatedProGalerieRouteImport } from './routes/_authenticated/pro.galerie'
 import { Route as AuthenticatedProOffresRouteImport } from './routes/_authenticated/pro.offres'
 
@@ -99,6 +100,11 @@ const AuthenticatedProIndexRoute = AuthenticatedProIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedProRoute,
 } as any)
+const AuthenticatedProAvisRoute = AuthenticatedProAvisRouteImport.update({
+  id: '/avis',
+  path: '/avis',
+  getParentRoute: () => AuthenticatedProRoute,
+} as any)
 const AuthenticatedProGalerieRoute = AuthenticatedProGalerieRouteImport.update({
   id: '/galerie',
   path: '/galerie',
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/espace/profil': typeof AuthenticatedEspaceProfilRoute
   '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
+  '/pro/avis': typeof AuthenticatedProAvisRoute
   '/pro/galerie': typeof AuthenticatedProGalerieRoute
   '/pro/offres': typeof AuthenticatedProOffresRoute
   '/espace/': typeof AuthenticatedEspaceIndexRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/espace/profil': typeof AuthenticatedEspaceProfilRoute
   '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
+  '/pro/avis': typeof AuthenticatedProAvisRoute
   '/pro/galerie': typeof AuthenticatedProGalerieRoute
   '/pro/offres': typeof AuthenticatedProOffresRoute
   '/espace': typeof AuthenticatedEspaceIndexRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/_authenticated/espace/profil': typeof AuthenticatedEspaceProfilRoute
   '/_authenticated/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/_authenticated/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
+  '/_authenticated/pro/avis': typeof AuthenticatedProAvisRoute
   '/_authenticated/pro/galerie': typeof AuthenticatedProGalerieRoute
   '/_authenticated/pro/offres': typeof AuthenticatedProOffresRoute
   '/_authenticated/espace/': typeof AuthenticatedEspaceIndexRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/espace/profil'
     | '/espace/promotions'
     | '/espace/recherche'
+    | '/pro/avis'
     | '/pro/galerie'
     | '/pro/offres'
     | '/espace/'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/espace/profil'
     | '/espace/promotions'
     | '/espace/recherche'
+    | '/pro/avis'
     | '/pro/galerie'
     | '/pro/offres'
     | '/espace'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/_authenticated/espace/profil'
     | '/_authenticated/espace/promotions'
     | '/_authenticated/espace/recherche'
+    | '/_authenticated/pro/avis'
     | '/_authenticated/pro/galerie'
     | '/_authenticated/pro/offres'
     | '/_authenticated/espace/'
@@ -323,6 +335,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProIndexRouteImport
       parentRoute: typeof AuthenticatedProRoute
     }
+    '/_authenticated/pro/avis': {
+      id: '/_authenticated/pro/avis'
+      path: '/avis'
+      fullPath: '/pro/avis'
+      preLoaderRoute: typeof AuthenticatedProAvisRouteImport
+      parentRoute: typeof AuthenticatedProRoute
+    }
     '/_authenticated/pro/galerie': {
       id: '/_authenticated/pro/galerie'
       path: '/galerie'
@@ -360,12 +379,14 @@ const AuthenticatedEspaceRouteWithChildren =
   AuthenticatedEspaceRoute._addFileChildren(AuthenticatedEspaceRouteChildren)
 
 interface AuthenticatedProRouteChildren {
+  AuthenticatedProAvisRoute: typeof AuthenticatedProAvisRoute
   AuthenticatedProGalerieRoute: typeof AuthenticatedProGalerieRoute
   AuthenticatedProOffresRoute: typeof AuthenticatedProOffresRoute
   AuthenticatedProIndexRoute: typeof AuthenticatedProIndexRoute
 }
 
 const AuthenticatedProRouteChildren: AuthenticatedProRouteChildren = {
+  AuthenticatedProAvisRoute: AuthenticatedProAvisRoute,
   AuthenticatedProGalerieRoute: AuthenticatedProGalerieRoute,
   AuthenticatedProOffresRoute: AuthenticatedProOffresRoute,
   AuthenticatedProIndexRoute: AuthenticatedProIndexRoute,
