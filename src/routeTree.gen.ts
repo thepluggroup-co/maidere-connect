@@ -18,6 +18,7 @@ import { Route as PrestatairesIndexRouteImport } from './routes/prestataires.ind
 import { Route as PrestatairesIdRouteImport } from './routes/prestataires.$id'
 import { Route as AuthenticatedEspaceIndexRouteImport } from './routes/_authenticated/espace.index'
 import { Route as AuthenticatedEspaceAvisRouteImport } from './routes/_authenticated/espace.avis'
+import { Route as AuthenticatedEspaceProfilRouteImport } from './routes/_authenticated/espace.profil'
 import { Route as AuthenticatedEspacePromotionsRouteImport } from './routes/_authenticated/espace.promotions'
 import { Route as AuthenticatedEspaceRechercheRouteImport } from './routes/_authenticated/espace.recherche'
 
@@ -66,6 +67,12 @@ const AuthenticatedEspaceAvisRoute = AuthenticatedEspaceAvisRouteImport.update({
   path: '/avis',
   getParentRoute: () => AuthenticatedEspaceRoute,
 } as any)
+const AuthenticatedEspaceProfilRoute =
+  AuthenticatedEspaceProfilRouteImport.update({
+    id: '/profil',
+    path: '/profil',
+    getParentRoute: () => AuthenticatedEspaceRoute,
+  } as any)
 const AuthenticatedEspacePromotionsRoute =
   AuthenticatedEspacePromotionsRouteImport.update({
     id: '/promotions',
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires/': typeof PrestatairesIndexRoute
   '/espace/avis': typeof AuthenticatedEspaceAvisRoute
+  '/espace/profil': typeof AuthenticatedEspaceProfilRoute
   '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/espace/': typeof AuthenticatedEspaceIndexRoute
@@ -98,6 +106,7 @@ export interface FileRoutesByTo {
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires': typeof PrestatairesIndexRoute
   '/espace/avis': typeof AuthenticatedEspaceAvisRoute
+  '/espace/profil': typeof AuthenticatedEspaceProfilRoute
   '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/espace': typeof AuthenticatedEspaceIndexRoute
@@ -112,6 +121,7 @@ export interface FileRoutesById {
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires/': typeof PrestatairesIndexRoute
   '/_authenticated/espace/avis': typeof AuthenticatedEspaceAvisRoute
+  '/_authenticated/espace/profil': typeof AuthenticatedEspaceProfilRoute
   '/_authenticated/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/_authenticated/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/_authenticated/espace/': typeof AuthenticatedEspaceIndexRoute
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/prestataires/$id'
     | '/prestataires/'
     | '/espace/avis'
+    | '/espace/profil'
     | '/espace/promotions'
     | '/espace/recherche'
     | '/espace/'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/prestataires/$id'
     | '/prestataires'
     | '/espace/avis'
+    | '/espace/profil'
     | '/espace/promotions'
     | '/espace/recherche'
     | '/espace'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
     | '/prestataires/$id'
     | '/prestataires/'
     | '/_authenticated/espace/avis'
+    | '/_authenticated/espace/profil'
     | '/_authenticated/espace/promotions'
     | '/_authenticated/espace/recherche'
     | '/_authenticated/espace/'
@@ -229,6 +242,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEspaceAvisRouteImport
       parentRoute: typeof AuthenticatedEspaceRoute
     }
+    '/_authenticated/espace/profil': {
+      id: '/_authenticated/espace/profil'
+      path: '/profil'
+      fullPath: '/espace/profil'
+      preLoaderRoute: typeof AuthenticatedEspaceProfilRouteImport
+      parentRoute: typeof AuthenticatedEspaceRoute
+    }
     '/_authenticated/espace/promotions': {
       id: '/_authenticated/espace/promotions'
       path: '/promotions'
@@ -248,6 +268,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedEspaceRouteChildren {
   AuthenticatedEspaceAvisRoute: typeof AuthenticatedEspaceAvisRoute
+  AuthenticatedEspaceProfilRoute: typeof AuthenticatedEspaceProfilRoute
   AuthenticatedEspacePromotionsRoute: typeof AuthenticatedEspacePromotionsRoute
   AuthenticatedEspaceRechercheRoute: typeof AuthenticatedEspaceRechercheRoute
   AuthenticatedEspaceIndexRoute: typeof AuthenticatedEspaceIndexRoute
@@ -255,6 +276,7 @@ interface AuthenticatedEspaceRouteChildren {
 
 const AuthenticatedEspaceRouteChildren: AuthenticatedEspaceRouteChildren = {
   AuthenticatedEspaceAvisRoute: AuthenticatedEspaceAvisRoute,
+  AuthenticatedEspaceProfilRoute: AuthenticatedEspaceProfilRoute,
   AuthenticatedEspacePromotionsRoute: AuthenticatedEspacePromotionsRoute,
   AuthenticatedEspaceRechercheRoute: AuthenticatedEspaceRechercheRoute,
   AuthenticatedEspaceIndexRoute: AuthenticatedEspaceIndexRoute,
