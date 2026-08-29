@@ -22,6 +22,7 @@ import { Route as AuthenticatedEspaceAvisRouteImport } from './routes/_authentic
 import { Route as AuthenticatedEspaceProfilRouteImport } from './routes/_authenticated/espace.profil'
 import { Route as AuthenticatedEspacePromotionsRouteImport } from './routes/_authenticated/espace.promotions'
 import { Route as AuthenticatedEspaceRechercheRouteImport } from './routes/_authenticated/espace.recherche'
+import { Route as AuthenticatedProIndexRouteImport } from './routes/_authenticated/pro.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -91,11 +92,16 @@ const AuthenticatedEspaceRechercheRoute =
     path: '/recherche',
     getParentRoute: () => AuthenticatedEspaceRoute,
   } as any)
+const AuthenticatedProIndexRoute = AuthenticatedProIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedProRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/espace': typeof AuthenticatedEspaceRouteWithChildren
-  '/pro': typeof AuthenticatedProRoute
+  '/pro': typeof AuthenticatedProRouteWithChildren
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
@@ -105,10 +111,10 @@ export interface FileRoutesByFullPath {
   '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/espace/': typeof AuthenticatedEspaceIndexRoute
+  '/pro/': typeof AuthenticatedProIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/pro': typeof AuthenticatedProRoute
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
@@ -118,13 +124,14 @@ export interface FileRoutesByTo {
   '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/espace': typeof AuthenticatedEspaceIndexRoute
+  '/pro': typeof AuthenticatedProIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/espace': typeof AuthenticatedEspaceRouteWithChildren
-  '/_authenticated/pro': typeof AuthenticatedProRoute
+  '/_authenticated/pro': typeof AuthenticatedProRouteWithChildren
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
@@ -134,6 +141,7 @@ export interface FileRoutesById {
   '/_authenticated/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/_authenticated/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/_authenticated/espace/': typeof AuthenticatedEspaceIndexRoute
+  '/_authenticated/pro/': typeof AuthenticatedProIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -150,10 +158,10 @@ export interface FileRouteTypes {
     | '/espace/promotions'
     | '/espace/recherche'
     | '/espace/'
+    | '/pro/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/pro'
     | '/auth/client'
     | '/auth/prestataire'
     | '/prestataires/$id'
@@ -163,6 +171,7 @@ export interface FileRouteTypes {
     | '/espace/promotions'
     | '/espace/recherche'
     | '/espace'
+    | '/pro'
   id:
     | '__root__'
     | '/'
@@ -178,6 +187,7 @@ export interface FileRouteTypes {
     | '/_authenticated/espace/promotions'
     | '/_authenticated/espace/recherche'
     | '/_authenticated/espace/'
+    | '/_authenticated/pro/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -282,6 +292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEspaceRechercheRouteImport
       parentRoute: typeof AuthenticatedEspaceRoute
     }
+    '/_authenticated/pro/': {
+      id: '/_authenticated/pro/'
+      path: '/'
+      fullPath: '/pro/'
+      preLoaderRoute: typeof AuthenticatedProIndexRouteImport
+      parentRoute: typeof AuthenticatedProRoute
+    }
   }
 }
 
@@ -304,14 +321,25 @@ const AuthenticatedEspaceRouteChildren: AuthenticatedEspaceRouteChildren = {
 const AuthenticatedEspaceRouteWithChildren =
   AuthenticatedEspaceRoute._addFileChildren(AuthenticatedEspaceRouteChildren)
 
+interface AuthenticatedProRouteChildren {
+  AuthenticatedProIndexRoute: typeof AuthenticatedProIndexRoute
+}
+
+const AuthenticatedProRouteChildren: AuthenticatedProRouteChildren = {
+  AuthenticatedProIndexRoute: AuthenticatedProIndexRoute,
+}
+
+const AuthenticatedProRouteWithChildren =
+  AuthenticatedProRoute._addFileChildren(AuthenticatedProRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedEspaceRoute: typeof AuthenticatedEspaceRouteWithChildren
-  AuthenticatedProRoute: typeof AuthenticatedProRoute
+  AuthenticatedProRoute: typeof AuthenticatedProRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEspaceRoute: AuthenticatedEspaceRouteWithChildren,
-  AuthenticatedProRoute: AuthenticatedProRoute,
+  AuthenticatedProRoute: AuthenticatedProRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
