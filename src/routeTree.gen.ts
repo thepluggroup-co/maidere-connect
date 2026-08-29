@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedEspaceRouteImport } from './routes/_authenticated/espace'
+import { Route as AuthenticatedProRouteImport } from './routes/_authenticated/pro'
 import { Route as AuthClientRouteImport } from './routes/auth/client'
 import { Route as AuthPrestataireRouteImport } from './routes/auth/prestataire'
 import { Route as PrestatairesIndexRouteImport } from './routes/prestataires.index'
@@ -34,6 +35,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthenticatedEspaceRoute = AuthenticatedEspaceRouteImport.update({
   id: '/espace',
   path: '/espace',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProRoute = AuthenticatedProRouteImport.update({
+  id: '/pro',
+  path: '/pro',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthClientRoute = AuthClientRouteImport.update({
@@ -89,6 +95,7 @@ const AuthenticatedEspaceRechercheRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/espace': typeof AuthenticatedEspaceRouteWithChildren
+  '/pro': typeof AuthenticatedProRoute
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/pro': typeof AuthenticatedProRoute
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/espace': typeof AuthenticatedEspaceRouteWithChildren
+  '/_authenticated/pro': typeof AuthenticatedProRoute
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/espace'
+    | '/pro'
     | '/auth/client'
     | '/auth/prestataire'
     | '/prestataires/$id'
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/pro'
     | '/auth/client'
     | '/auth/prestataire'
     | '/prestataires/$id'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/_authenticated/espace'
+    | '/_authenticated/pro'
     | '/auth/client'
     | '/auth/prestataire'
     | '/prestataires/$id'
@@ -198,6 +210,13 @@ declare module '@tanstack/react-router' {
       path: '/espace'
       fullPath: '/espace'
       preLoaderRoute: typeof AuthenticatedEspaceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pro': {
+      id: '/_authenticated/pro'
+      path: '/pro'
+      fullPath: '/pro'
+      preLoaderRoute: typeof AuthenticatedProRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/auth/client': {
@@ -287,10 +306,12 @@ const AuthenticatedEspaceRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedEspaceRoute: typeof AuthenticatedEspaceRouteWithChildren
+  AuthenticatedProRoute: typeof AuthenticatedProRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEspaceRoute: AuthenticatedEspaceRouteWithChildren,
+  AuthenticatedProRoute: AuthenticatedProRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
