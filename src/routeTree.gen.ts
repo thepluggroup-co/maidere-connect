@@ -11,6 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as CguRouteImport } from './routes/cgu'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as AuthenticatedEspaceRouteImport } from './routes/_authenticated/espace'
 import { Route as AuthenticatedProRouteImport } from './routes/_authenticated/pro'
 import { Route as AuthClientRouteImport } from './routes/auth/client'
@@ -35,6 +39,26 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CguRoute = CguRouteImport.update({
+  id: '/cgu',
+  path: '/cgu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedEspaceRoute = AuthenticatedEspaceRouteImport.update({
@@ -124,6 +148,10 @@ const AuthenticatedProProfilRoute = AuthenticatedProProfilRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/cgu': typeof CguRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/espace': typeof AuthenticatedEspaceRouteWithChildren
   '/pro': typeof AuthenticatedProRouteWithChildren
   '/auth/client': typeof AuthClientRoute
@@ -143,6 +171,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/cgu': typeof CguRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/auth/client': typeof AuthClientRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
@@ -162,6 +194,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/a-propos': typeof AProposRoute
+  '/cgu': typeof CguRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/_authenticated/espace': typeof AuthenticatedEspaceRouteWithChildren
   '/_authenticated/pro': typeof AuthenticatedProRouteWithChildren
   '/auth/client': typeof AuthClientRoute
@@ -183,6 +219,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/a-propos'
+    | '/cgu'
+    | '/contact'
+    | '/faq'
     | '/espace'
     | '/pro'
     | '/auth/client'
@@ -202,6 +242,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/a-propos'
+    | '/cgu'
+    | '/contact'
+    | '/faq'
     | '/auth/client'
     | '/auth/prestataire'
     | '/prestataires/$id'
@@ -220,6 +264,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/a-propos'
+    | '/cgu'
+    | '/contact'
+    | '/faq'
     | '/_authenticated/espace'
     | '/_authenticated/pro'
     | '/auth/client'
@@ -241,6 +289,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AProposRoute: typeof AProposRoute
+  CguRoute: typeof CguRoute
+  ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
   AuthClientRoute: typeof AuthClientRoute
   AuthPrestataireRoute: typeof AuthPrestataireRoute
   PrestatairesIdRoute: typeof PrestatairesIdRoute
@@ -261,6 +313,34 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cgu': {
+      id: '/cgu'
+      path: '/cgu'
+      fullPath: '/cgu'
+      preLoaderRoute: typeof CguRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/espace': {
@@ -432,6 +512,10 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AProposRoute: AProposRoute,
+  CguRoute: CguRoute,
+  ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
   AuthClientRoute: AuthClientRoute,
   AuthPrestataireRoute: AuthPrestataireRoute,
   PrestatairesIdRoute: PrestatairesIdRoute,
