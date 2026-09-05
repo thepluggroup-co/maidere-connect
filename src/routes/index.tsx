@@ -233,7 +233,13 @@ function MatchingDemo() {
     [categorieId, quartier],
   );
 
-  const cible = useMemo(() => delaiCible(new Date(), urgence), [urgence]);
+  const [maintenant, setMaintenant] = useState<Date | null>(null);
+  useEffect(() => setMaintenant(new Date()), []);
+
+  const cible = useMemo(
+    () => (maintenant ? delaiCible(maintenant, urgence) : null),
+    [maintenant, urgence],
+  );
 
 
   return (
