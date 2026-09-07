@@ -317,7 +317,7 @@ function MatchingDemo() {
             <span className={`font-bold ${URGENCES[urgence].ton}`}>
               {URGENCES[urgence].delaiHeures} h
             </span>{" "}
-            — échéance {resteAvantDelai(cible)}.
+            — échéance {cible ? resteAvantDelai(cible) : "—"}.
           </p>
         </div>
       </div>
@@ -795,7 +795,17 @@ function Landing() {
               </li>
             </ul>
           </div>
-
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-widest text-primary-foreground/90">
+              Informations
+            </h3>
+            <ul className="mt-4 space-y-2 text-sm text-primary-foreground/70">
+              <li><Link to="/a-propos" className="hover:text-primary-foreground">À propos</Link></li>
+              <li><Link to="/faq" className="hover:text-primary-foreground">FAQ</Link></li>
+              <li><Link to="/contact" className="hover:text-primary-foreground">Contact</Link></li>
+              <li><Link to="/cgu" className="hover:text-primary-foreground">Conditions d'utilisation</Link></li>
+            </ul>
+          </div>
         </div>
         <div className="border-t border-primary-foreground/15 px-5 py-5 text-center text-xs text-primary-foreground/60">
           © {new Date().getFullYear()} MAIDERES — Tous les services près de chez vous.
