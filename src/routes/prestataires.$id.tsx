@@ -52,12 +52,10 @@ function FichePrestataire() {
 
         <header className="mt-4 rounded-3xl border border-border bg-card p-6">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-display text-2xl font-bold text-foreground">{p.nom_affichage}</h1>
-            {p.verifie && (
-              <span className="rounded-full bg-secondary/10 px-2 py-0.5 text-xs font-semibold text-secondary">
-                Vérifié
-              </span>
-            )}
+            <h1 className="font-display text-2xl font-bold text-foreground">{p.nom}</h1>
+            <span className="rounded-full bg-secondary/10 px-2 py-0.5 text-xs font-semibold text-secondary">
+              Vérifié
+            </span>
             {p.disponible && (
               <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
                 Disponible
@@ -132,7 +130,7 @@ function FichePrestataire() {
                 <figure key={r.id} className="overflow-hidden rounded-2xl border border-border">
                   <img
                     src={r.image_url}
-                    alt={r.titre}
+                    alt={r.titre ?? ""}
                     loading="lazy"
                     className="h-40 w-full object-cover"
                   />

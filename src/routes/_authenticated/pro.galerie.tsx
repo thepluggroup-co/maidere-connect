@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { authorizedFetch } from "@/lib/maideres-core-client";
 import { maFichePrestataire, type Realisation } from "@/lib/maideres-api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,13 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/_authenticated/pro/galerie")({
   component: GaleriePro,
 });
+
+async function verifierOk(res: Response, contexte: string) {
+  if (!res.ok) {
+    const body = await res.json().catch(() => null) as { error?: string } | null;
+    throw new Error(body?.error || `${contexte} a échoué (${res.status})`);
+  }
+}
 
 function GaleriePro() {
   const queryClient = useQueryClient();
@@ -21,23 +29,18 @@ function GaleriePro() {
   const { data } = useQuery({
     queryKey: ["ma-galerie"],
     queryFn: async () => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) return null;
-      const fiche = await maFichePrestataire(u.user.id);
+      const fiche = await maFichePrestataire();
       if (!fiche) return { fiche: null, realisations: [] as Realisation[] };
-      const { data: r } = await supabase
-        .from("realisations")
-        .select("*")
-        .eq("prestataire_id", fiche.id)
-        .order("created_at", { ascending: false });
-      return { fiche, realisations: (r ?? []) as unknown as Realisation[] };
+      const res = await authorizedFetch("/api/realisations");
+      const body = (await res.json()) as { data: Realisation[] };
+      return { fiche, realisations: body.data };
     },
   });
 
   const supprimer = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("realisations").delete().eq("id", id);
-      if (error) throw error;
+      const res = await authorizedFetch(`/api/realisations/${id}`, { method: "DELETE" });
+      await verifierOk(res, "Suppression de la photo");
     },
     onSuccess: () => {
       toast.success("Photo supprimée");
@@ -51,19 +54,27 @@ function GaleriePro() {
     setEnvoi(true);
     try {
       if (!data?.fiche) throw new Error("Créez d'abord votre fiche dans « Profil pro »");
-      const chemin = `${data.fiche.user_id}/${Date.now()}-${fichier.name}`;
+      const { data: u } = await supabase.auth.getUser();
+      if (!u.user) throw new Error("Session expirée — reconnectez-vous");
+
+      // L'upload lui-même reste un appel Storage direct (bucket "maideres",
+      // public en lecture, écriture restreinte au dossier de l'utilisateur —
+      // cf. packages/db/drizzle/0028_offres_promotions_realisations_rls.sql) ;
+      // seule la ligne de métadonnées passe par l'API MAIDERES.
+      const chemin = `${u.user.id}/${Date.now()}-${fichier.name}`;
       const { error: up } = await supabase.storage.from("maideres").upload(chemin, fichier);
       if (up) throw up;
-      const { data: signee } = await supabase.storage
-        .from("maideres")
-        .createSignedUrl(chemin, 60 * 60 * 24 * 365);
-      const { error } = await supabase.from("realisations").insert({
-        prestataire_id: data.fiche.id,
-        user_id: data.fiche.user_id,
-        titre: titre || "Réalisation",
-        image_url: signee?.signedUrl ?? chemin,
+      const { data: publique } = supabase.storage.from("maideres").getPublicUrl(chemin);
+
+      const res = await authorizedFetch("/api/realisations", {
+        method: "POST",
+        body: JSON.stringify({
+          titre: titre || "Réalisation",
+          image_url: publique.publicUrl,
+        }),
       });
-      if (error) throw error;
+      await verifierOk(res, "Enregistrement de la photo");
+
       toast.success("Photo ajoutée");
       setTitre("");
       setFichier(null);
@@ -109,7 +120,7 @@ function GaleriePro() {
         <div className="grid gap-3 sm:grid-cols-3">
           {data!.realisations.map((r) => (
             <figure key={r.id} className="overflow-hidden rounded-2xl border border-border bg-card">
-              <img src={r.image_url} alt={r.titre} loading="lazy" className="h-40 w-full object-cover" />
+              <img src={r.image_url} alt={r.titre ?? ""} loading="lazy" className="h-40 w-full object-cover" />
               <figcaption className="flex items-center justify-between gap-2 p-2 text-xs text-muted-foreground">
                 {r.titre}
                 <button

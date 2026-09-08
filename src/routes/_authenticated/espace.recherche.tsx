@@ -87,8 +87,8 @@ function RechercheClient() {
               className="rounded-2xl border border-border bg-card p-4 hover:shadow-md"
             >
               <div className="flex items-center justify-between gap-2">
-                <p className="font-semibold text-foreground">{p.nom_affichage}</p>
-                {p.verifie && <span className="text-xs text-secondary">Vérifié</span>}
+                <p className="font-semibold text-foreground">{p.nom}</p>
+                <span className="text-xs text-secondary">Vérifié</span>
               </div>
               <p className="text-sm text-primary">{p.metier}</p>
               <p className="text-xs text-muted-foreground">

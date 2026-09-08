@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { maFichePrestataire, moyenne } from "@/lib/maideres-api";
+import { authorizedFetch } from "@/lib/maideres-core-client";
+import { maFichePrestataire, moyenne, type Offre, type Promotion } from "@/lib/maideres-api";
 
 export const Route = createFileRoute("/_authenticated/pro/")({
   component: TableauPro,
@@ -11,20 +11,20 @@ function TableauPro() {
   const { data, isLoading } = useQuery({
     queryKey: ["tableau-pro"],
     queryFn: async () => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) return null;
-      const fiche = await maFichePrestataire(u.user.id);
+      const fiche = await maFichePrestataire();
       if (!fiche) return { fiche: null, offres: 0, promos: 0, avis: [] as { note: number }[] };
-      const [offres, promos, avis] = await Promise.all([
-        supabase.from("offres").select("id").eq("prestataire_id", fiche.id),
-        supabase.from("promotions").select("id").eq("prestataire_id", fiche.id).eq("active", true),
-        supabase.from("avis").select("note").eq("prestataire_id", fiche.id),
+      const [offresRes, promosRes] = await Promise.all([
+        authorizedFetch("/api/offres"),
+        authorizedFetch("/api/promotions"),
       ]);
+      const offres = ((await offresRes.json()) as { data: Offre[] }).data;
+      const promos = ((await promosRes.json()) as { data: Promotion[] }).data;
       return {
         fiche,
-        offres: offres.data?.length ?? 0,
-        promos: promos.data?.length ?? 0,
-        avis: (avis.data ?? []) as { note: number }[],
+        offres: offres.length,
+        promos: promos.filter((p) => p.active !== false).length,
+        // Avis pas encore branchés côté API — voir maideres-api.ts.
+        avis: [] as { note: number }[],
       };
     },
   });
@@ -52,7 +52,7 @@ function TableauPro() {
     <div className="space-y-8">
       <div>
         <h1 className="font-display text-2xl font-bold text-foreground">
-          {data.fiche.nom_affichage}
+          {data.fiche.nom}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {data.fiche.metier} · {data.fiche.quartier ? `${data.fiche.quartier}, ` : ""}
