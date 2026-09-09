@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { maFichePrestataire, moyenne, type Avis } from "@/lib/maideres-api";
+import { authorizedFetch } from "@/lib/maideres-core-client";
+import { moyenne, type Avis } from "@/lib/maideres-api";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/pro/avis")({
@@ -12,28 +12,29 @@ export const Route = createFileRoute("/_authenticated/pro/avis")({
 function AvisPro() {
   const queryClient = useQueryClient();
 
-  const { data } = useQuery({
+  // GET /api/avis, sans filtre, se limite automatiquement aux avis liés aux
+  // matchings du prestataire authentifié (cf. apps/api/src/routes/avis.ts) —
+  // aucun paramètre prestataire_id à passer ici.
+  const { data: avis } = useQuery({
     queryKey: ["avis-recus"],
     queryFn: async () => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) return null;
-      const fiche = await maFichePrestataire(u.user.id);
-      if (!fiche) return { avis: [] as Avis[] };
-      const { data: a } = await supabase
-        .from("avis")
-        .select("*")
-        .eq("prestataire_id", fiche.id)
-        .order("created_at", { ascending: false });
-      return { avis: (a ?? []) as unknown as Avis[] };
+      const res = await authorizedFetch("/api/avis");
+      return ((await res.json()) as { data: Avis[] }).data;
     },
   });
 
   const repondre = useMutation({
-    mutationFn: async (avis: Avis) => {
-      const reponse = window.prompt("Votre réponse publique", avis.reponse ?? "");
+    mutationFn: async (a: Avis) => {
+      const reponse = window.prompt("Votre réponse publique", a.reponse ?? "");
       if (reponse === null) return;
-      const { error } = await supabase.from("avis").update({ reponse }).eq("id", avis.id);
-      if (error) throw error;
+      const res = await authorizedFetch(`/api/avis/${a.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ reponse: reponse || null }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null) as { error?: string } | null;
+        throw new Error(body?.error || `Réponse échouée (${res.status})`);
+      }
     },
     onSuccess: () => {
       toast.success("Réponse enregistrée");
@@ -42,19 +43,19 @@ function AvisPro() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Erreur"),
   });
 
-  const avis = data?.avis ?? [];
+  const liste = avis ?? [];
 
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-foreground">Avis reçus</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        {avis.length > 0
-          ? `Note moyenne ${moyenne(avis).toFixed(1)}/5 sur ${avis.length} avis`
+        {liste.length > 0
+          ? `Note moyenne ${moyenne(liste).toFixed(1)}/5 sur ${liste.length} avis`
           : "Aucun avis pour le moment."}
       </p>
 
       <ul className="mt-6 space-y-3">
-        {avis.map((a) => (
+        {liste.map((a) => (
           <li key={a.id} className="rounded-2xl border border-border bg-card p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold text-foreground">{a.note}/5</p>

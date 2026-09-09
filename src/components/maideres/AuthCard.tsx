@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { VILLES, quartiersParVille, type Ville } from "@/lib/maidere";
+import { resoudreIdentitePourUtilisateur } from "@/lib/maideres-core-client";
 
 type Props = { role: "client" | "prestataire" };
 
@@ -41,12 +42,16 @@ export function AuthCard({ role }: Props) {
     setChargement(true);
     try {
       if (mode === "connexion") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password: motDePasse });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password: motDePasse });
         if (error) throw error;
+        // Rattrape le cas d'un compte confirmé par e-mail après l'inscription
+        // (pas de session au moment du signUp() → fiche client/prestataire
+        // pas encore créée, cf. maideres-core-client.ts) — idempotent sinon.
+        if (data.user) await resoudreIdentitePourUtilisateur(data.user).catch(() => {});
         toast.success("Bienvenue sur MAIDERES");
         void navigate({ to: destination });
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password: motDePasse,
           options: {
@@ -62,8 +67,20 @@ export function AuthCard({ role }: Props) {
           },
         });
         if (error) throw error;
-        toast.success("Compte créé. Vous pouvez vous connecter.");
-        void navigate({ to: destination });
+
+        if (data.session) {
+          // Confirmation e-mail désactivée sur ce projet : session immédiate,
+          // on peut provisionner la fiche client/prestataire tout de suite.
+          await resoudreIdentitePourUtilisateur(data.user!).catch(() => {});
+          toast.success("Compte créé.");
+          void navigate({ to: destination });
+        } else {
+          // Confirmation e-mail requise : pas de session tant qu'elle n'est
+          // pas validée. La fiche sera provisionnée à la prochaine connexion
+          // (voir branche "connexion" ci-dessus).
+          toast.success("Compte créé — confirmez votre e-mail puis connectez-vous.");
+          setMode("connexion");
+        }
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Une erreur est survenue");
@@ -106,6 +123,8 @@ export function AuthCard({ role }: Props) {
                     value={telephone}
                     onChange={(e) => setTelephone(e.target.value)}
                     placeholder="+237 6 xx xx xx xx"
+                    minLength={6}
+                    required
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">

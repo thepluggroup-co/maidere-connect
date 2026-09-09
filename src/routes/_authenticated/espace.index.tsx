@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { publicFetch } from "@/lib/maideres-core-client";
 import { listerPrestataires } from "@/lib/maideres-api";
 
 export const Route = createFileRoute("/_authenticated/espace/")({
@@ -16,12 +16,9 @@ function TableauClient() {
   const { data: promos } = useQuery({
     queryKey: ["espace-promos"],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("promotions")
-        .select("id, titre, remise_pct, description")
-        .eq("active", true)
-        .limit(6);
-      return data ?? [];
+      const res = await publicFetch("/api/public/promotions?limit=6");
+      const body = (await res.json()) as { data: { id: string; titre: string; remise_pct: number; description: string | null }[] };
+      return body.data ?? [];
     },
   });
 
@@ -57,7 +54,7 @@ function TableauClient() {
               params={{ id: p.id }}
               className="rounded-2xl border border-border bg-card p-4 hover:shadow-md"
             >
-              <p className="font-semibold text-foreground">{p.nom_affichage}</p>
+              <p className="font-semibold text-foreground">{p.nom}</p>
               <p className="text-sm text-primary">{p.metier}</p>
               <p className="text-xs text-muted-foreground">
                 {p.quartier ? `${p.quartier}, ` : ""}

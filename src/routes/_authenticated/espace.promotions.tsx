@@ -1,21 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { publicFetch } from "@/lib/maideres-core-client";
 
 export const Route = createFileRoute("/_authenticated/espace/promotions")({
   component: PromotionsClient,
 });
 
+type PromotionActive = { id: string; titre: string; description: string | null; remise_pct: number; prestataire_id: string; fin: string | null };
+
 function PromotionsClient() {
   const { data, isLoading } = useQuery({
     queryKey: ["promotions-actives"],
     queryFn: async () => {
-      const { data: promos } = await supabase
-        .from("promotions")
-        .select("id, titre, description, remise_pct, prestataire_id, fin")
-        .eq("active", true)
-        .order("remise_pct", { ascending: false });
-      return promos ?? [];
+      const res = await publicFetch("/api/public/promotions?limit=60");
+      const body = (await res.json()) as { data: PromotionActive[] };
+      return body.data ?? [];
     },
   });
 

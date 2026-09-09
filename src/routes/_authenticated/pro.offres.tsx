@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { authorizedFetch } from "@/lib/maideres-core-client";
 import { maFichePrestataire, CATEGORIES, type Offre } from "@/lib/maideres-api";
 import { xof } from "@/lib/maidere";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,13 @@ import { Textarea } from "@/components/ui/textarea";
 export const Route = createFileRoute("/_authenticated/pro/offres")({
   component: OffresPro,
 });
+
+async function verifierOk(res: Response, contexte: string) {
+  if (!res.ok) {
+    const body = await res.json().catch(() => null) as { error?: string } | null;
+    throw new Error(body?.error || `${contexte} a échoué (${res.status})`);
+  }
+}
 
 function OffresPro() {
   const queryClient = useQueryClient();
@@ -27,44 +34,33 @@ function OffresPro() {
   const { data } = useQuery({
     queryKey: ["mes-offres"],
     queryFn: async () => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) return null;
-      const fiche = await maFichePrestataire(u.user.id);
-      if (!fiche) return { fiche: null, offres: [] as Offre[], promos: [] as any[] };
-      const [offres, promos] = await Promise.all([
-        supabase
-          .from("offres")
-          .select("*")
-          .eq("prestataire_id", fiche.id)
-          .order("created_at", { ascending: false }),
-        supabase.from("promotions").select("*").eq("prestataire_id", fiche.id),
-      ]);
-      return {
-        fiche,
-        offres: (offres.data ?? []) as unknown as Offre[],
-        promos: promos.data ?? [],
-      };
+      const fiche = await maFichePrestataire();
+      if (!fiche) return { fiche: null, offres: [] as Offre[] };
+      const res = await authorizedFetch("/api/offres");
+      const body = (await res.json()) as { data: Offre[] };
+      return { fiche, offres: body.data };
     },
   });
 
   const creer = useMutation({
     mutationFn: async () => {
       if (!data?.fiche) throw new Error("Créez d'abord votre fiche dans « Profil pro »");
-      const { error } = await supabase.from("offres").insert({
-        prestataire_id: data.fiche.id,
-        user_id: data.fiche.user_id,
-        titre,
-        categorie,
-        description: description || null,
-        prestations: prestations
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean),
-        prix,
-        unite_prix: unite,
-        delai_heures: delai,
+      const res = await authorizedFetch("/api/offres", {
+        method: "POST",
+        body: JSON.stringify({
+          titre,
+          categorie,
+          description: description || null,
+          prestations: prestations
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+          prix,
+          unite_prix: unite,
+          delai_heures: delai,
+        }),
       });
-      if (error) throw error;
+      await verifierOk(res, "Création de l'offre");
     },
     onSuccess: () => {
       toast.success("Offre publiée");
@@ -78,8 +74,8 @@ function OffresPro() {
 
   const supprimer = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("offres").delete().eq("id", id);
-      if (error) throw error;
+      const res = await authorizedFetch(`/api/offres/${id}`, { method: "DELETE" });
+      await verifierOk(res, "Suppression de l'offre");
     },
     onSuccess: () => {
       toast.success("Offre supprimée");
@@ -89,8 +85,11 @@ function OffresPro() {
 
   const basculer = useMutation({
     mutationFn: async ({ id, publie }: { id: string; publie: boolean }) => {
-      const { error } = await supabase.from("offres").update({ publie }).eq("id", id);
-      if (error) throw error;
+      const res = await authorizedFetch(`/api/offres/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ publie }),
+      });
+      await verifierOk(res, "Mise à jour de l'offre");
     },
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["mes-offres"] }),
   });
@@ -99,14 +98,15 @@ function OffresPro() {
     mutationFn: async (offre: Offre) => {
       const remise = Number(window.prompt("Remise en % (1-90)", "10"));
       if (!remise || remise < 1 || remise > 90) throw new Error("Remise invalide");
-      const { error } = await supabase.from("promotions").insert({
-        prestataire_id: offre.prestataire_id,
-        user_id: offre.user_id,
-        offre_id: offre.id,
-        titre: `${offre.titre} en promo`,
-        remise_pct: remise,
+      const res = await authorizedFetch("/api/promotions", {
+        method: "POST",
+        body: JSON.stringify({
+          offre_id: offre.id,
+          titre: `${offre.titre} en promo`,
+          remise_pct: remise,
+        }),
       });
-      if (error) throw error;
+      await verifierOk(res, "Création de la promotion");
     },
     onSuccess: () => {
       toast.success("Promotion créée");
