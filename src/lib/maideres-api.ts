@@ -96,6 +96,18 @@ export type Demande = {
   created_at: string;
 };
 
+export type Client = {
+  id: string;
+  profile_id: string;
+  nom: string;
+  telephone: string;
+  quartier: string | null;
+  type_client: "particulier" | "entreprise" | "organisation";
+  niu: string | null;
+  whatsapp: string | null;
+  email: string | null;
+};
+
 export type Matching = {
   id: string;
   demande_id: string;
@@ -111,6 +123,23 @@ export type Matching = {
 export async function listerCategories(): Promise<CategorieService[]> {
   const res = await authorizedFetch("/api/categories_services");
   return lireJson<CategorieService[]>(res, "GET /api/categories_services");
+}
+
+export async function monClient(): Promise<Client | null> {
+  const res = await authorizedFetch("/api/clients");
+  const rows = await lireJson<Client[]>(res, "GET /api/clients");
+  return rows[0] ?? null;
+}
+
+export async function modifierMonClient(
+  id: string,
+  payload: Pick<Client, "nom" | "telephone" | "quartier">,
+): Promise<Client> {
+  const res = await authorizedFetch(`/api/clients/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+  return lireJson<Client>(res, "PATCH /api/clients/:id");
 }
 
 export const CATEGORIES = [

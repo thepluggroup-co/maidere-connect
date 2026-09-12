@@ -3,10 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { modifierMonClient, monClient } from "@/lib/maideres-api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { VILLES, quartiersParVille, type Ville } from "@/lib/maidere";
 
 export const Route = createFileRoute("/_authenticated/espace/profil")({
   component: ProfilClient,
@@ -15,7 +15,6 @@ export const Route = createFileRoute("/_authenticated/espace/profil")({
 function ProfilClient() {
   const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
-  const [ville, setVille] = useState<Ville>("Douala");
   const [quartier, setQuartier] = useState("");
   const [enregistrement, setEnregistrement] = useState(false);
 
@@ -24,20 +23,14 @@ function ProfilClient() {
     queryFn: async () => {
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) return null;
-      const { data: p } = await supabase
-        .from("profiles")
-        .select("nom_complet, telephone, ville, quartier")
-        .eq("id", u.user.id)
-        .maybeSingle();
-      return { email: u.user.email ?? "", profil: p };
+      return { email: u.user.email ?? "", profil: await monClient() };
     },
   });
 
   useEffect(() => {
     if (!data?.profil) return;
-    setNom(data.profil.nom_complet ?? "");
+    setNom(data.profil.nom ?? "");
     setTelephone(data.profil.telephone ?? "");
-    if (data.profil.ville) setVille(data.profil.ville as Ville);
     setQuartier(data.profil.quartier ?? "");
   }, [data]);
 
@@ -45,13 +38,8 @@ function ProfilClient() {
     e.preventDefault();
     setEnregistrement(true);
     try {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) throw new Error("Session expirée");
-      const { error } = await supabase
-        .from("profiles")
-        .update({ nom_complet: nom, telephone, ville, quartier })
-        .eq("id", u.user.id);
-      if (error) throw error;
+      if (!data?.profil) throw new Error("Aucune fiche client associée à ce compte");
+      await modifierMonClient(data.profil.id, { nom, telephone, quartier: quartier || null });
       toast.success("Profil enregistré");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erreur");
@@ -74,41 +62,9 @@ function ProfilClient() {
           <Label htmlFor="tel">Téléphone</Label>
           <Input id="tel" value={telephone} onChange={(e) => setTelephone(e.target.value)} />
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="ville">Ville</Label>
-            <select
-              id="ville"
-              value={ville}
-              onChange={(e) => {
-                setVille(e.target.value as Ville);
-                setQuartier("");
-              }}
-              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-            >
-              {VILLES.map((v) => (
-                <option key={v.nom} value={v.nom}>
-                  {v.nom}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="quartier">Quartier</Label>
-            <select
-              id="quartier"
-              value={quartier}
-              onChange={(e) => setQuartier(e.target.value)}
-              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-            >
-              <option value="">—</option>
-              {quartiersParVille(ville).map((q) => (
-                <option key={q} value={q}>
-                  {q}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="quartier">Quartier</Label>
+          <Input id="quartier" value={quartier} onChange={(e) => setQuartier(e.target.value)} />
         </div>
         <Button type="submit" disabled={enregistrement}>
           {enregistrement ? "Enregistrement…" : "Enregistrer"}

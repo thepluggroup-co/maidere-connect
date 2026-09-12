@@ -18,6 +18,7 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as AuthenticatedEspaceRouteImport } from './routes/_authenticated/espace'
 import { Route as AuthenticatedProRouteImport } from './routes/_authenticated/pro'
 import { Route as AuthClientRouteImport } from './routes/auth/client'
+import { Route as AuthConfirmationRouteImport } from './routes/auth/confirmation'
 import { Route as AuthPrestataireRouteImport } from './routes/auth/prestataire'
 import { Route as PrestatairesIndexRouteImport } from './routes/prestataires.index'
 import { Route as PrestatairesIdRouteImport } from './routes/prestataires.$id'
@@ -28,6 +29,7 @@ import { Route as AuthenticatedEspacePromotionsRouteImport } from './routes/_aut
 import { Route as AuthenticatedEspaceRechercheRouteImport } from './routes/_authenticated/espace.recherche'
 import { Route as AuthenticatedProIndexRouteImport } from './routes/_authenticated/pro.index'
 import { Route as AuthenticatedProAvisRouteImport } from './routes/_authenticated/pro.avis'
+import { Route as AuthenticatedProDemandesRouteImport } from './routes/_authenticated/pro.demandes'
 import { Route as AuthenticatedProGalerieRouteImport } from './routes/_authenticated/pro.galerie'
 import { Route as AuthenticatedProOffresRouteImport } from './routes/_authenticated/pro.offres'
 import { Route as AuthenticatedProProfilRouteImport } from './routes/_authenticated/pro.profil'
@@ -77,6 +79,11 @@ const AuthenticatedProRoute = AuthenticatedProRouteImport.update({
 const AuthClientRoute = AuthClientRouteImport.update({
   id: '/auth/client',
   path: '/auth/client',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthConfirmationRoute = AuthConfirmationRouteImport.update({
+  id: '/auth/confirmation',
+  path: '/auth/confirmation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthPrestataireRoute = AuthPrestataireRouteImport.update({
@@ -133,6 +140,12 @@ const AuthenticatedProAvisRoute = AuthenticatedProAvisRouteImport.update({
   path: '/avis',
   getParentRoute: () => AuthenticatedProRoute,
 } as any)
+const AuthenticatedProDemandesRoute =
+  AuthenticatedProDemandesRouteImport.update({
+    id: '/demandes',
+    path: '/demandes',
+    getParentRoute: () => AuthenticatedProRoute,
+  } as any)
 const AuthenticatedProGalerieRoute = AuthenticatedProGalerieRouteImport.update({
   id: '/galerie',
   path: '/galerie',
@@ -176,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/espace': typeof AuthenticatedEspaceRouteWithChildren
   '/pro': typeof AuthenticatedProRouteWithChildren
   '/auth/client': typeof AuthClientRoute
+  '/auth/confirmation': typeof AuthConfirmationRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires/': typeof PrestatairesIndexRoute
@@ -184,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/pro/avis': typeof AuthenticatedProAvisRoute
+  '/pro/demandes': typeof AuthenticatedProDemandesRoute
   '/pro/galerie': typeof AuthenticatedProGalerieRoute
   '/pro/offres': typeof AuthenticatedProOffresRoute
   '/pro/profil': typeof AuthenticatedProProfilRoute
@@ -200,6 +215,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/auth/client': typeof AuthClientRoute
+  '/auth/confirmation': typeof AuthConfirmationRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires': typeof PrestatairesIndexRoute
@@ -208,6 +224,7 @@ export interface FileRoutesByTo {
   '/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/pro/avis': typeof AuthenticatedProAvisRoute
+  '/pro/demandes': typeof AuthenticatedProDemandesRoute
   '/pro/galerie': typeof AuthenticatedProGalerieRoute
   '/pro/offres': typeof AuthenticatedProOffresRoute
   '/pro/profil': typeof AuthenticatedProProfilRoute
@@ -228,6 +245,7 @@ export interface FileRoutesById {
   '/_authenticated/espace': typeof AuthenticatedEspaceRouteWithChildren
   '/_authenticated/pro': typeof AuthenticatedProRouteWithChildren
   '/auth/client': typeof AuthClientRoute
+  '/auth/confirmation': typeof AuthConfirmationRoute
   '/auth/prestataire': typeof AuthPrestataireRoute
   '/prestataires/$id': typeof PrestatairesIdRoute
   '/prestataires/': typeof PrestatairesIndexRoute
@@ -236,6 +254,7 @@ export interface FileRoutesById {
   '/_authenticated/espace/promotions': typeof AuthenticatedEspacePromotionsRoute
   '/_authenticated/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/_authenticated/pro/avis': typeof AuthenticatedProAvisRoute
+  '/_authenticated/pro/demandes': typeof AuthenticatedProDemandesRoute
   '/_authenticated/pro/galerie': typeof AuthenticatedProGalerieRoute
   '/_authenticated/pro/offres': typeof AuthenticatedProOffresRoute
   '/_authenticated/pro/profil': typeof AuthenticatedProProfilRoute
@@ -256,6 +275,7 @@ export interface FileRouteTypes {
     | '/espace'
     | '/pro'
     | '/auth/client'
+    | '/auth/confirmation'
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires/'
@@ -264,6 +284,7 @@ export interface FileRouteTypes {
     | '/espace/promotions'
     | '/espace/recherche'
     | '/pro/avis'
+    | '/pro/demandes'
     | '/pro/galerie'
     | '/pro/offres'
     | '/pro/profil'
@@ -280,6 +301,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/auth/client'
+    | '/auth/confirmation'
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires'
@@ -288,6 +310,7 @@ export interface FileRouteTypes {
     | '/espace/promotions'
     | '/espace/recherche'
     | '/pro/avis'
+    | '/pro/demandes'
     | '/pro/galerie'
     | '/pro/offres'
     | '/pro/profil'
@@ -307,6 +330,7 @@ export interface FileRouteTypes {
     | '/_authenticated/espace'
     | '/_authenticated/pro'
     | '/auth/client'
+    | '/auth/confirmation'
     | '/auth/prestataire'
     | '/prestataires/$id'
     | '/prestataires/'
@@ -315,6 +339,7 @@ export interface FileRouteTypes {
     | '/_authenticated/espace/promotions'
     | '/_authenticated/espace/recherche'
     | '/_authenticated/pro/avis'
+    | '/_authenticated/pro/demandes'
     | '/_authenticated/pro/galerie'
     | '/_authenticated/pro/offres'
     | '/_authenticated/pro/profil'
@@ -333,6 +358,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   AuthClientRoute: typeof AuthClientRoute
+  AuthConfirmationRoute: typeof AuthConfirmationRoute
   AuthPrestataireRoute: typeof AuthPrestataireRoute
   PrestatairesIdRoute: typeof PrestatairesIdRoute
   PrestatairesIndexRoute: typeof PrestatairesIndexRoute
@@ -403,6 +429,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthClientRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/confirmation': {
+      id: '/auth/confirmation'
+      path: '/auth/confirmation'
+      fullPath: '/auth/confirmation'
+      preLoaderRoute: typeof AuthConfirmationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/prestataire': {
       id: '/auth/prestataire'
       path: '/auth/prestataire'
@@ -471,6 +504,13 @@ declare module '@tanstack/react-router' {
       path: '/avis'
       fullPath: '/pro/avis'
       preLoaderRoute: typeof AuthenticatedProAvisRouteImport
+      parentRoute: typeof AuthenticatedProRoute
+    }
+    '/_authenticated/pro/demandes': {
+      id: '/_authenticated/pro/demandes'
+      path: '/demandes'
+      fullPath: '/pro/demandes'
+      preLoaderRoute: typeof AuthenticatedProDemandesRouteImport
       parentRoute: typeof AuthenticatedProRoute
     }
     '/_authenticated/pro/galerie': {
@@ -546,6 +586,7 @@ const AuthenticatedEspaceRouteWithChildren =
 
 interface AuthenticatedProRouteChildren {
   AuthenticatedProAvisRoute: typeof AuthenticatedProAvisRoute
+  AuthenticatedProDemandesRoute: typeof AuthenticatedProDemandesRoute
   AuthenticatedProGalerieRoute: typeof AuthenticatedProGalerieRoute
   AuthenticatedProOffresRoute: typeof AuthenticatedProOffresRoute
   AuthenticatedProProfilRoute: typeof AuthenticatedProProfilRoute
@@ -554,6 +595,7 @@ interface AuthenticatedProRouteChildren {
 
 const AuthenticatedProRouteChildren: AuthenticatedProRouteChildren = {
   AuthenticatedProAvisRoute: AuthenticatedProAvisRoute,
+  AuthenticatedProDemandesRoute: AuthenticatedProDemandesRoute,
   AuthenticatedProGalerieRoute: AuthenticatedProGalerieRoute,
   AuthenticatedProOffresRoute: AuthenticatedProOffresRoute,
   AuthenticatedProProfilRoute: AuthenticatedProProfilRoute,
@@ -584,6 +626,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   AuthClientRoute: AuthClientRoute,
+  AuthConfirmationRoute: AuthConfirmationRoute,
   AuthPrestataireRoute: AuthPrestataireRoute,
   PrestatairesIdRoute: PrestatairesIdRoute,
   PrestatairesIndexRoute: PrestatairesIndexRoute,
