@@ -55,7 +55,7 @@ export function AuthCard({ role }: Props) {
           email,
           password: motDePasse,
           options: {
-            emailRedirectTo: `${window.location.origin}${destination}`,
+            emailRedirectTo: `${window.location.origin}/auth/confirmation`,
             data: {
               nom_complet: nom,
               telephone,
