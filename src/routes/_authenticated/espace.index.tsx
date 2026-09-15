@@ -114,7 +114,7 @@ function TableauClient() {
               className="rounded-2xl border border-border bg-card p-4 hover:shadow-md"
             >
               <p className="font-semibold text-foreground">{p.nom}</p>
-              <p className="text-sm text-primary">{p.metier}</p>
+              <p className="text-sm text-primary">{p.metier_libelle}</p>
               <p className="text-xs text-muted-foreground">
                 {p.quartier ? `${p.quartier}, ` : ""}
                 {p.ville}

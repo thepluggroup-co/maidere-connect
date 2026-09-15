@@ -18,7 +18,8 @@ export type Prestataire = {
   telephone: string | null;
   quartier: string | null;
   ville: string | null;
-  metier: string | null;
+  metier_id: string | null;
+  metier_libelle: string | null;
   bio: string | null;
   disponible: boolean;
   zones_couverture: string[];
@@ -125,6 +126,12 @@ export async function listerCategories(): Promise<CategorieService[]> {
   return lireJson<CategorieService[]>(res, "GET /api/categories_services");
 }
 
+/** GET /api/public/categories_services — public, aucune session requise (recherche anonyme). */
+export async function listerCategoriesPubliques(): Promise<Pick<CategorieService, "id" | "libelle">[]> {
+  const res = await publicFetch("/api/public/categories_services");
+  return lireJson<Pick<CategorieService, "id" | "libelle">[]>(res, "GET /api/public/categories_services");
+}
+
 export async function monClient(): Promise<Client | null> {
   const res = await authorizedFetch("/api/clients");
   const rows = await lireJson<Client[]>(res, "GET /api/clients");
@@ -142,17 +149,6 @@ export async function modifierMonClient(
   return lireJson<Client>(res, "PATCH /api/clients/:id");
 }
 
-export const CATEGORIES = [
-  "Plomberie",
-  "Bricolage & rénovation",
-  "Restauration",
-  "Hébergement",
-  "Shopping",
-  "Transport",
-  "Immobilier",
-  "Couture",
-];
-
 async function lireJson<T>(res: Response, contexte: string): Promise<T> {
   if (!res.ok) throw new Error(`${contexte} a échoué (${res.status})`);
   const body = (await res.json()) as { data: T };
@@ -162,13 +158,13 @@ async function lireJson<T>(res: Response, contexte: string): Promise<T> {
 export async function listerPrestataires(filtres: {
   ville?: string;
   quartier?: string;
-  categorie?: string;
+  categorieId?: string;
   recherche?: string;
 }): Promise<Prestataire[]> {
   const params = new URLSearchParams();
   if (filtres.ville) params.set("ville", filtres.ville);
   if (filtres.quartier) params.set("quartier", filtres.quartier);
-  if (filtres.categorie) params.set("categorie", filtres.categorie);
+  if (filtres.categorieId) params.set("categorie_id", filtres.categorieId);
   if (filtres.recherche) params.set("recherche", filtres.recherche);
 
   const res = await publicFetch(`/api/public/prestataires?${params.toString()}`);

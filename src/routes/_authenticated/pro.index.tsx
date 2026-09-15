@@ -55,7 +55,7 @@ function TableauPro() {
           {data.fiche.nom}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {data.fiche.metier} · {data.fiche.quartier ? `${data.fiche.quartier}, ` : ""}
+          {data.fiche.metier_libelle} · {data.fiche.quartier ? `${data.fiche.quartier}, ` : ""}
           {data.fiche.ville}
         </p>
       </div>

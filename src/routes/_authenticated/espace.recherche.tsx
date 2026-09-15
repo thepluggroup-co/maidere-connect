@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { listerPrestataires, CATEGORIES } from "@/lib/maideres-api";
+import { listerPrestataires, listerCategories } from "@/lib/maideres-api";
 import { VILLES, quartiersParVille, type Ville } from "@/lib/maidere";
 import { Input } from "@/components/ui/input";
 
@@ -12,12 +12,17 @@ export const Route = createFileRoute("/_authenticated/espace/recherche")({
 function RechercheClient() {
   const [ville, setVille] = useState<Ville | "">("");
   const [quartier, setQuartier] = useState("");
-  const [categorie, setCategorie] = useState("");
+  const [categorieId, setCategorieId] = useState("");
   const [recherche, setRecherche] = useState("");
 
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: listerCategories,
+  });
+
   const { data, isLoading } = useQuery({
-    queryKey: ["recherche-client", ville, quartier, categorie, recherche],
-    queryFn: () => listerPrestataires({ ville, quartier, categorie, recherche }),
+    queryKey: ["recherche-client", ville, quartier, categorieId, recherche],
+    queryFn: () => listerPrestataires({ ville, quartier, categorieId, recherche }),
   });
 
   return (
@@ -55,14 +60,14 @@ function RechercheClient() {
             ))}
         </select>
         <select
-          value={categorie}
-          onChange={(e) => setCategorie(e.target.value)}
+          value={categorieId}
+          onChange={(e) => setCategorieId(e.target.value)}
           className="h-9 rounded-md border border-input bg-background px-3 text-sm"
         >
           <option value="">Tous les métiers</option>
-          {CATEGORIES.map((c) => (
-            <option key={c} value={c}>
-              {c}
+          {(categories ?? []).map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.libelle}
             </option>
           ))}
         </select>
@@ -90,7 +95,7 @@ function RechercheClient() {
                 <p className="font-semibold text-foreground">{p.nom}</p>
                 <span className="text-xs text-secondary">Vérifié</span>
               </div>
-              <p className="text-sm text-primary">{p.metier}</p>
+              <p className="text-sm text-primary">{p.metier_libelle}</p>
               <p className="text-xs text-muted-foreground">
                 {p.quartier ? `${p.quartier}, ` : ""}
                 {p.ville}

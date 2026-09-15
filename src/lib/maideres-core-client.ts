@@ -78,7 +78,7 @@ type FicheMetierPayload = {
   telephone: string;
   quartier?: string;
   ville?: string;
-  metier?: string;
+  metier_id?: string;
 };
 
 /** POST /api/clients — auto-inscription (profile_id = l'utilisateur authentifié). */
@@ -130,13 +130,13 @@ export async function resoudreIdentitePourUtilisateur(user: User): Promise<Ident
   if (!dejaProvisionne && (roleInscription === "client" || roleInscription === "prestataire")) {
     const quartier = user.user_metadata?.["quartier"] as string | undefined;
     const ville = user.user_metadata?.["ville"] as string | undefined;
-    const metier = user.user_metadata?.["metier"] as string | undefined;
+    const metierId = user.user_metadata?.["metier_id"] as string | undefined;
     const payload: FicheMetierPayload = {
       nom: (user.user_metadata?.["nom_complet"] as string | undefined) || user.email || "Utilisateur",
       telephone: (user.user_metadata?.["telephone"] as string | undefined) || "",
       ...(quartier ? { quartier } : {}),
       ...(ville ? { ville } : {}),
-      ...(metier ? { metier } : {}),
+      ...(metierId ? { metier_id: metierId } : {}),
     };
     try {
       if (roleInscription === "client") await creerFicheClient(payload);

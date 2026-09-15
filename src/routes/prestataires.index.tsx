@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { listerPrestataires, CATEGORIES } from "@/lib/maideres-api";
+import { listerPrestataires, listerCategoriesPubliques } from "@/lib/maideres-api";
 import { VILLES, quartiersParVille, type Ville } from "@/lib/maidere";
 import { Input } from "@/components/ui/input";
 
@@ -27,12 +27,17 @@ export const Route = createFileRoute("/prestataires/")({
 function RecherchePublique() {
   const [ville, setVille] = useState<Ville | "">("");
   const [quartier, setQuartier] = useState("");
-  const [categorie, setCategorie] = useState("");
+  const [categorieId, setCategorieId] = useState("");
   const [recherche, setRecherche] = useState("");
 
+  const { data: categories } = useQuery({
+    queryKey: ["categories-publiques"],
+    queryFn: listerCategoriesPubliques,
+  });
+
   const { data, isLoading } = useQuery({
-    queryKey: ["prestataires", ville, quartier, categorie, recherche],
-    queryFn: () => listerPrestataires({ ville, quartier, categorie, recherche }),
+    queryKey: ["prestataires", ville, quartier, categorieId, recherche],
+    queryFn: () => listerPrestataires({ ville, quartier, categorieId, recherche }),
   });
 
   return (
@@ -79,14 +84,14 @@ function RecherchePublique() {
               ))}
           </select>
           <select
-            value={categorie}
-            onChange={(e) => setCategorie(e.target.value)}
+            value={categorieId}
+            onChange={(e) => setCategorieId(e.target.value)}
             className="h-9 rounded-md border border-input bg-background px-3 text-sm"
           >
             <option value="">Tous les métiers</option>
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
+            {(categories ?? []).map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.libelle}
               </option>
             ))}
           </select>
@@ -118,7 +123,7 @@ function RecherchePublique() {
                     Vérifié
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-primary">{p.metier}</p>
+                <p className="mt-1 text-sm text-primary">{p.metier_libelle}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {p.quartier ? `${p.quartier}, ` : ""}
                   {p.ville}
