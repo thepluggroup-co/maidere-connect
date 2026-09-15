@@ -21,7 +21,7 @@ import {
   Mail,
 } from "lucide-react";
 
-import logo from "@/assets/maideres-logo.asset.json";
+import logo from "@/assets/ChatGPT_Image_24_août_2026__20_19_28-removebg-preview.png";
 import heroImage from "@/assets/hero-maidere.jpg";
 import {
   URGENCES,
