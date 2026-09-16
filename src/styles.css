@@ -186,3 +186,14 @@
     color: var(--color-foreground);
   }
 }
+
+@layer utilities {
+  @keyframes shimmer {
+    0% { opacity: 0.35; }
+    50% { opacity: 0.85; }
+    100% { opacity: 0.35; }
+  }
+  .animate-shimmer {
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+}
