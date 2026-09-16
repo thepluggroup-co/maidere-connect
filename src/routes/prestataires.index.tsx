@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listerPrestataires, listerCategoriesPubliques } from "@/lib/maideres-api";
 import { VILLES, quartiersParVille, type Ville } from "@/lib/maidere";
 import { Input } from "@/components/ui/input";
+import { ProviderCard } from "@/components/maideres/ProviderCard";
 
 export const Route = createFileRoute("/prestataires/")({
   head: () => ({
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/prestataires/")({
 });
 
 function RecherchePublique() {
+  const navigate = useNavigate();
   const [ville, setVille] = useState<Ville | "">("");
   const [quartier, setQuartier] = useState("");
   const [categorieId, setCategorieId] = useState("");
@@ -110,28 +112,13 @@ function RecherchePublique() {
           </p>
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {data!.map((p) => (
-              <Link
+            {data!.map((p, i) => (
+              <ProviderCard
                 key={p.id}
-                to="/prestataires/$id"
-                params={{ id: p.id }}
-                className="rounded-2xl border border-border bg-card p-5 transition-shadow hover:shadow-md"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <h2 className="font-display font-semibold text-foreground">{p.nom}</h2>
-                  <span className="rounded-full bg-secondary/10 px-2 py-0.5 text-xs font-semibold text-secondary">
-                    Vérifié
-                  </span>
-                </div>
-                <p className="mt-1 text-sm text-primary">{p.metier_libelle}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {p.quartier ? `${p.quartier}, ` : ""}
-                  {p.ville}
-                </p>
-                {p.bio && (
-                  <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{p.bio}</p>
-                )}
-              </Link>
+                prestataire={p}
+                recommande={i === 0}
+                onVoirFiche={(id) => navigate({ to: "/prestataires/$id", params: { id } })}
+              />
             ))}
           </div>
         )}
