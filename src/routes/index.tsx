@@ -21,7 +21,6 @@ import {
   Mail,
 } from "lucide-react";
 
-import logo from "@/assets/maideres-logo.asset.json";
 import heroImage from "@/assets/hero-maidere.jpg";
 import {
   URGENCES,
@@ -404,7 +403,7 @@ function Landing() {
         <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-3">
           <a href="#top" className="flex min-w-0 items-center gap-3">
             <img
-              src={logo.url}
+              src="/logo-icon.svg"
               alt="Logo MAIDERES"
               width={44}
               height={44}
@@ -751,7 +750,7 @@ function Landing() {
           <div>
             <div className="flex items-center gap-3">
               <img
-                src={logo.url}
+                src="/logo-icon.svg"
                 alt="Logo MAIDERES"
                 width={40}
                 height={40}

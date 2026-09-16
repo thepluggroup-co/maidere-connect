@@ -2,7 +2,6 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/maideres-logo.asset.json";
 import type { ReactNode } from "react";
 
 export type LienEspace = { to: string; label: string };
@@ -31,7 +30,7 @@ export function EspaceShell({
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo.url} alt="MAIDERES" className="h-9 w-auto object-contain" />
+            <img src="/logo-icon.svg" alt="MAIDERES" className="h-9 w-auto object-contain" />
           </Link>
           <span className="font-display text-sm font-semibold text-secondary">{titre}</span>
           <nav className="ml-auto flex flex-wrap items-center gap-1">
