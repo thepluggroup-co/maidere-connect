@@ -9,22 +9,34 @@
  * errorCorrectionLevel="H" est nécessaire ici : le logo posé au centre
  * masque une partie du code, seul le niveau de correction le plus élevé
  * garantit qu'il reste lisible.
+ *
+ * `prestataireNom`/`ville` optionnels (ajusté en construisant le tunnel
+ * Concierge) : à la création d'une demande, aucun prestataire n'est
+ * encore matché (ça se fait après, côté Console 360) — imposer ces
+ * champs aurait forcé soit un mensonge (inventer un nom), soit un abus
+ * de `as`. Sans prestataire, la légende devient générique ('référence de
+ * suivi') plutôt que 'à présenter à'.
  */
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { MaideresIcon } from "./Logo";
-import type { Ville } from "@/lib/maidere";
 
 export interface DigitalPassportProps {
   /** Contenu encodé dans le QR — ex. URL de vérification côté prestataire. */
   qrValue: string;
   code: string;
-  prestataireNom: string;
-  ville: Ville;
+  prestataireNom?: string;
+  ville?: string;
   className?: string;
 }
 
-export function DigitalPassport({ qrValue, code, prestataireNom, ville, className }: DigitalPassportProps) {
+export function DigitalPassport({
+  qrValue,
+  code,
+  prestataireNom,
+  ville,
+  className,
+}: DigitalPassportProps) {
   const [svg, setSvg] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,11 +58,16 @@ export function DigitalPassport({ qrValue, code, prestataireNom, ville, classNam
     <div
       className={`flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center shadow-sm ${className ?? ""}`}
     >
-      <p className="text-xs font-semibold uppercase tracking-wider text-primary">Passeport numérique</p>
+      <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+        Passeport numérique
+      </p>
 
       <div className="relative flex h-44 w-44 items-center justify-center">
         {svg ? (
-          <div className="h-full w-full [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: svg }} />
+          <div
+            className="h-full w-full [&>svg]:h-full [&>svg]:w-full"
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
         ) : (
           <div className="h-full w-full animate-shimmer rounded-lg bg-muted" aria-hidden="true" />
         )}
@@ -61,7 +78,14 @@ export function DigitalPassport({ qrValue, code, prestataireNom, ville, classNam
 
       <p className="font-mono text-sm font-bold tracking-widest text-foreground">{code}</p>
       <p className="text-xs text-muted-foreground">
-        À présenter à {prestataireNom} · {ville}
+        {prestataireNom ? (
+          <>
+            À présenter à {prestataireNom}
+            {ville ? ` · ${ville}` : ""}
+          </>
+        ) : (
+          "Référence de suivi de votre demande"
+        )}
       </p>
     </div>
   );
