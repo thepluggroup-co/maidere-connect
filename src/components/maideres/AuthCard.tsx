@@ -10,9 +10,9 @@ import { VILLES, quartiersParVille, type Ville } from "@/lib/maidere";
 import { resoudreIdentitePourUtilisateur } from "@/lib/maideres-core-client";
 import { listerCategoriesPubliques } from "@/lib/maideres-api";
 
-type Props = { role: "client" | "prestataire" };
+type Props = { role: "client" | "prestataire"; redirectTo?: string };
 
-export function AuthCard({ role }: Props) {
+export function AuthCard({ role, redirectTo }: Props) {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"connexion" | "inscription">("connexion");
   const [chargement, setChargement] = useState(false);
@@ -31,7 +31,15 @@ export function AuthCard({ role }: Props) {
     enabled: role === "prestataire",
   });
 
-  const destination = role === "prestataire" ? "/pro" : "/espace";
+  const destination = redirectTo || (role === "prestataire" ? "/pro" : "/espace");
+  // redirectTo peut être une URL absolue-ish avec sa propre requête
+  // ("/espace/demandes/nouvelle?offre_id=...") — hors du typage de
+  // navigate({ to }), donc navigation "dure" dans ce cas précis ; le
+  // chemin par défaut (/espace ou /pro) reste une navigation client normale.
+  function allerVersDestination() {
+    if (redirectTo) window.location.assign(redirectTo);
+    else allerVersDestination();
+  }
   const estPro = role === "prestataire";
 
   async function soumettre(e: React.FormEvent) {
@@ -39,14 +47,17 @@ export function AuthCard({ role }: Props) {
     setChargement(true);
     try {
       if (mode === "connexion") {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password: motDePasse });
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password: motDePasse,
+        });
         if (error) throw error;
         // Rattrape le cas d'un compte confirmé par e-mail après l'inscription
         // (pas de session au moment du signUp() → fiche client/prestataire
         // pas encore créée, cf. maideres-core-client.ts) — idempotent sinon.
         if (data.user) await resoudreIdentitePourUtilisateur(data.user).catch(() => {});
         toast.success("Bienvenue sur MAIDERES");
-        void navigate({ to: destination });
+        allerVersDestination();
       } else {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -70,7 +81,7 @@ export function AuthCard({ role }: Props) {
           // on peut provisionner la fiche client/prestataire tout de suite.
           await resoudreIdentitePourUtilisateur(data.user!).catch(() => {});
           toast.success("Compte créé.");
-          void navigate({ to: destination });
+          allerVersDestination();
         } else {
           // Confirmation e-mail requise : pas de session tant qu'elle n'est
           // pas validée. La fiche sera provisionnée à la prochaine connexion
@@ -204,7 +215,11 @@ export function AuthCard({ role }: Props) {
             </div>
 
             <Button type="submit" disabled={chargement} className="w-full">
-              {chargement ? "Patientez…" : mode === "connexion" ? "Se connecter" : "Créer mon compte"}
+              {chargement
+                ? "Patientez…"
+                : mode === "connexion"
+                  ? "Se connecter"
+                  : "Créer mon compte"}
             </Button>
           </form>
 

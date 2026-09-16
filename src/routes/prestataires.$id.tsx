@@ -116,6 +116,13 @@ function FichePrestataire() {
                       ))}
                     </ul>
                   )}
+                  <Link
+                    to="/espace/demandes/nouvelle"
+                    search={{ offre_id: o.id, prestataire_id: p.id }}
+                    className="mt-3 inline-flex rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground"
+                  >
+                    Demander cette offre
+                  </Link>
                 </div>
               ))}
             </div>
