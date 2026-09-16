@@ -1,17 +1,23 @@
 /**
- * Logo — src/components/maideres/Logo.tsx (nouveau fichier)
+ * Logo — src/components/maideres/Logo.tsx
  *
- * Avant : src/routes/index.tsx importe directement le PNG
- * ("@/assets/ChatGPT_Image_24_août_2026__20_19_28-removebg-preview.png")
- * et l'affiche brut. Ce composant centralise l'usage du logo (comme côté
- * ERP) pour ne plus avoir l'import du PNG dispersé dans les routes, et
- * ajoute la même garde de taille minimale (32px) que côté ERP.
+ * ⚠️ Deuxième correction sur ce fichier. Ma première version référençait
+ * "/maideres-icon.svg" (à copier depuis le repo MAIDERES, jamais fait) et
+ * "MaideresLogoLockupOfficial" pointait vers le PNG ChatGPT, qui n'est
+ * plus l'asset actif depuis qu'un fix logo a été mergé sur cette branche
+ * (commit 5ead14d, côté équipe) — remplacé entre-temps par
+ * src/assets/logo-icon-real.png suite à un merge ultérieur (0ee132f).
+ * C'est CE fichier qui est réellement affiché sur le site aujourd'hui.
+ * Vérifié visuellement : c'est bien le symbole officiel (épingle + anneau
+ * + M blanc + accent doré), pas une reconstruction approximative.
  *
- * Prérequis avant d'utiliser MaideresIcon ici : copier
- * apps/web/public/maideres-icon.svg (repo MAIDERES) vers public/ de ce
- * repo — actuellement absent côté vitrine, qui n'a que le PNG.
+ * Nettoyage fait dans le même commit : suppression de 3 fichiers résidus
+ * qui n'ont plus aucune référence dans le code (vérifié par grep) :
+ *  - public/ChatGPT_Image_24_août_2026__20_19_28-removebg-preview.png
+ *  - src/assets/maideres-logo.asset.json (pointeur Lovable cassé)
+ *  - src/assets/maidere-logo.asset.json (même chose, nom avec une typo)
  */
-import logoLockup from "@/assets/ChatGPT_Image_24_août_2026__20_19_28-removebg-preview.png";
+import logoIcon from "@/assets/logo-icon-real.png";
 
 function warnIfTooSmall(size: number) {
   if (import.meta.env.DEV && size < 32) {
@@ -23,9 +29,9 @@ export function MaideresIcon({ size = 40, className }: { size?: number; classNam
   warnIfTooSmall(size);
   return (
     <img
-      src="/maideres-icon.svg" // à copier depuis le repo MAIDERES — voir note en tête de fichier
+      src={logoIcon}
       alt="MAIDERES"
-      style={{ width: size, height: size }}
+      style={{ width: size, height: "auto" }}
       className={className}
     />
   );
@@ -57,24 +63,5 @@ export function MaideresLogo({ size = 32, className, orientation = "horizontal",
         )}
       </span>
     </span>
-  );
-}
-
-/**
- * Lockup officiel complet (PNG fourni par Johanne) — pour le header de la
- * landing et les contextes où la fidélité pixel exacte prime sur le
- * scaling net. C'est cette image qui est déjà utilisée dans index.tsx
- * aujourd'hui ; ce wrapper ajoute juste la garde de taille mini et centralise
- * l'usage pour éviter que le chemin du fichier soit dupliqué ailleurs.
- */
-export function MaideresLogoLockupOfficial({ width = 200, className }: { width?: number; className?: string }) {
-  warnIfTooSmall(width);
-  return (
-    <img
-      src={logoLockup}
-      alt="MAIDERES — Tous les services près de chez vous"
-      style={{ width, height: "auto" }}
-      className={className}
-    />
   );
 }
