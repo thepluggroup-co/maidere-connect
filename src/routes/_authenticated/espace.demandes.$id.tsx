@@ -3,7 +3,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { authorizedFetch } from "@/lib/maideres-core-client";
-import { listerCategories, type Demande, type Matching, type Avis, type Prestataire } from "@/lib/maideres-api";
+import {
+  listerCategories,
+  listerInterventions,
+  STATUT_INTERVENTION_LABEL,
+  type Demande,
+  type Matching,
+  type Avis,
+  type Prestataire,
+} from "@/lib/maideres-api";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -42,22 +50,42 @@ function DemandeDetail() {
 
   const { data: demande, isLoading } = useQuery({
     queryKey: ["demande", id],
-    queryFn: async () => lire<Demande>(await authorizedFetch(`/api/demandes/${id}`), "GET /api/demandes/:id"),
+    queryFn: async () =>
+      lire<Demande>(await authorizedFetch(`/api/demandes/${id}`), "GET /api/demandes/:id"),
   });
 
   const { data: categories } = useQuery({ queryKey: ["categories"], queryFn: listerCategories });
 
   const { data: matchings } = useQuery({
     queryKey: ["matchings-demande", id],
-    queryFn: async () => lire<Matching[]>(await authorizedFetch(`/api/matchings?demande_id=${id}`), "GET /api/matchings"),
+    queryFn: async () =>
+      lire<Matching[]>(
+        await authorizedFetch(`/api/matchings?demande_id=${id}`),
+        "GET /api/matchings",
+      ),
   });
 
-  const matchingActif = matchings?.find((m) => ["propose", "accepte", "realise"].includes(m.statut));
+  const matchingActif = matchings?.find((m) =>
+    ["propose", "accepte", "realise"].includes(m.statut),
+  );
+
+  // Détail du suivi terrain (lecture seule côté client — cf.
+  // canAccessIntervention, apps/api/src/routes/interventions.ts) : n'existe
+  // qu'une fois le matching accepté (créé à l'acceptation par le prestataire).
+  const { data: interventions } = useQuery({
+    queryKey: ["interventions-matching", matchingActif?.id],
+    queryFn: async () => listerInterventions({ matching_id: matchingActif!.id }),
+    enabled: Boolean(matchingActif && matchingActif.statut === "accepte"),
+  });
+  const intervention = interventions?.[0];
 
   const { data: prestataire } = useQuery({
     queryKey: ["prestataire", matchingActif?.prestataire_id],
     queryFn: async () =>
-      lire<Prestataire>(await authorizedFetch(`/api/prestataires/${matchingActif!.prestataire_id}`), "GET /api/prestataires/:id"),
+      lire<Prestataire>(
+        await authorizedFetch(`/api/prestataires/${matchingActif!.prestataire_id}`),
+        "GET /api/prestataires/:id",
+      ),
     enabled: Boolean(matchingActif),
   });
 
@@ -91,10 +119,14 @@ function DemandeDetail() {
     mutationFn: async () => {
       const res = await authorizedFetch("/api/avis", {
         method: "POST",
-        body: JSON.stringify({ matching_id: matchingActif!.id, note, commentaire: commentaire || null }),
+        body: JSON.stringify({
+          matching_id: matchingActif!.id,
+          note,
+          commentaire: commentaire || null,
+        }),
       });
       if (!res.ok) {
-        const body = await res.json().catch(() => null) as { error?: string } | null;
+        const body = (await res.json().catch(() => null)) as { error?: string } | null;
         throw new Error(body?.error || `Publication échouée (${res.status})`);
       }
     },
@@ -110,7 +142,9 @@ function DemandeDetail() {
     return (
       <div>
         <p className="text-sm text-muted-foreground">Demande introuvable.</p>
-        <Link to="/espace/demandes" className="mt-3 inline-block text-sm text-primary">← Mes demandes</Link>
+        <Link to="/espace/demandes" className="mt-3 inline-block text-sm text-primary">
+          ← Mes demandes
+        </Link>
       </div>
     );
   }
@@ -132,14 +166,27 @@ function DemandeDetail() {
         </div>
         <p className="mt-3 text-sm text-foreground">{demande.description}</p>
         {demande.localisation && (
-          <p className="mt-2 text-xs text-muted-foreground">Localisation : {demande.localisation}</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Localisation : {demande.localisation}
+          </p>
         )}
         <p className="mt-1 text-xs text-muted-foreground">
-          Envoyée le {new Date(demande.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+          Envoyée le{" "}
+          {new Date(demande.created_at).toLocaleDateString("fr-FR", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
         </p>
 
         {demande.statut === "nouvelle" && (
-          <Button variant="outline" size="sm" className="mt-4" onClick={() => annuler.mutate()} disabled={annuler.isPending}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-4"
+            onClick={() => annuler.mutate()}
+            disabled={annuler.isPending}
+          >
             Annuler ma demande
           </Button>
         )}
@@ -147,15 +194,28 @@ function DemandeDetail() {
 
       {matchingActif && (
         <div className="rounded-2xl border border-border bg-card p-5">
-          <h2 className="font-display text-lg font-semibold text-foreground">Prestataire assigné</h2>
+          <h2 className="font-display text-lg font-semibold text-foreground">
+            Prestataire assigné
+          </h2>
           <p className="mt-2 text-sm font-semibold text-foreground">{prestataire?.nom ?? "…"}</p>
           <p className="text-xs text-muted-foreground">{MATCHING_LABEL[matchingActif.statut]}</p>
+
+          {intervention && matchingActif.statut === "accepte" && (
+            <div className="mt-3 flex items-center gap-2 rounded-xl bg-muted px-3 py-2">
+              <span className="text-xs text-muted-foreground">Avancement :</span>
+              <span className="text-xs font-semibold text-foreground">
+                {STATUT_INTERVENTION_LABEL[intervention.statut]}
+              </span>
+            </div>
+          )}
 
           {matchingActif.statut === "realise" && (
             <div className="mt-4 border-t border-border pt-4">
               {avisExistant ? (
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Votre avis : {avisExistant.note}/5</p>
+                  <p className="text-sm font-semibold text-foreground">
+                    Votre avis : {avisExistant.note}/5
+                  </p>
                   {avisExistant.commentaire && (
                     <p className="mt-1 text-sm text-muted-foreground">{avisExistant.commentaire}</p>
                   )}
@@ -191,7 +251,12 @@ function DemandeDetail() {
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="com">Commentaire</Label>
-                    <Textarea id="com" rows={3} value={commentaire} onChange={(e) => setCommentaire(e.target.value)} />
+                    <Textarea
+                      id="com"
+                      rows={3}
+                      value={commentaire}
+                      onChange={(e) => setCommentaire(e.target.value)}
+                    />
                   </div>
                   <Button type="submit" size="sm" disabled={publierAvis.isPending}>
                     {publierAvis.isPending ? "Envoi…" : "Publier mon avis"}

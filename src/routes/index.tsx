@@ -21,7 +21,7 @@ import {
   Mail,
 } from "lucide-react";
 
-import logo from "@/assets/ChatGPT_Image_24_août_2026__20_19_28-removebg-preview.png";
+import logo from "@/assets/logo-icon-real.png";
 import heroImage from "@/assets/hero-maidere.jpg";
 import {
   URGENCES,
@@ -37,7 +37,6 @@ import {
   type Prestataire,
   type Ville,
 } from "@/lib/maidere";
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -60,7 +59,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Landing,
 });
-
 
 const services = [
   { name: "Plomberie", icon: Droplets, tint: "bg-brand-indigo" },
@@ -241,7 +239,6 @@ function MatchingDemo() {
     [maintenant, urgence],
   );
 
-
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
       <div className="rounded-3xl border border-border bg-card p-6">
@@ -395,8 +392,6 @@ function CommissionDemo() {
   );
 }
 
-
-
 function Landing() {
   return (
     <div className="min-h-screen font-sans">
@@ -404,7 +399,7 @@ function Landing() {
         <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-3">
           <a href="#top" className="flex min-w-0 items-center gap-3">
             <img
-              src={logo.url}
+              src={logo}
               alt="Logo MAIDERES"
               width={44}
               height={44}
@@ -462,7 +457,10 @@ function Landing() {
 
       <main id="top">
         {/* Hero */}
-        <section className="relative overflow-hidden" style={{ background: "var(--gradient-deep)" }}>
+        <section
+          className="relative overflow-hidden"
+          style={{ background: "var(--gradient-deep)" }}
+        >
           <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-secondary/25 blur-3xl" />
           <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 lg:grid-cols-2 lg:py-24">
             <div className="text-primary-foreground">
@@ -555,8 +553,8 @@ function Landing() {
                 Huit familles de services, un seul point d'entrée
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Du dépannage à la commande du quotidien, MAIDERES couvre les besoins des foyers
-                et des entreprises.
+                Du dépannage à la commande du quotidien, MAIDERES couvre les besoins des foyers et
+                des entreprises.
               </p>
             </div>
             <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -652,7 +650,6 @@ function Landing() {
           </div>
         </section>
 
-
         {/* Testimonials */}
         <section className="bg-muted/60 py-16 lg:py-24">
           <div className="mx-auto max-w-6xl px-5">
@@ -712,10 +709,7 @@ function Landing() {
                 </button>
               </form>
             </div>
-            <div
-              id="prestataires"
-              className="rounded-3xl border border-border bg-card p-8 lg:p-10"
-            >
+            <div id="prestataires" className="rounded-3xl border border-border bg-card p-8 lg:p-10">
               <h2 className="text-2xl font-extrabold text-primary sm:text-3xl">
                 Je suis prestataire
               </h2>
@@ -751,7 +745,7 @@ function Landing() {
           <div>
             <div className="flex items-center gap-3">
               <img
-                src={logo.url}
+                src={logo}
                 alt="Logo MAIDERES"
                 width={40}
                 height={40}
@@ -800,10 +794,26 @@ function Landing() {
               Informations
             </h3>
             <ul className="mt-4 space-y-2 text-sm text-primary-foreground/70">
-              <li><Link to="/a-propos" className="hover:text-primary-foreground">À propos</Link></li>
-              <li><Link to="/faq" className="hover:text-primary-foreground">FAQ</Link></li>
-              <li><Link to="/contact" className="hover:text-primary-foreground">Contact</Link></li>
-              <li><Link to="/cgu" className="hover:text-primary-foreground">Conditions d'utilisation</Link></li>
+              <li>
+                <Link to="/a-propos" className="hover:text-primary-foreground">
+                  À propos
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className="hover:text-primary-foreground">
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-primary-foreground">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link to="/cgu" className="hover:text-primary-foreground">
+                  Conditions d'utilisation
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
