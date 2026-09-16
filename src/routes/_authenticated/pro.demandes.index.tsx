@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { authorizedFetch } from "@/lib/maideres-core-client";
 import type { Demande } from "@/lib/maideres-api";
 
-export const Route = createFileRoute("/_authenticated/pro/demandes")({
+export const Route = createFileRoute("/_authenticated/pro/demandes/")({
   component: GestionDemandesPro,
 });
 
