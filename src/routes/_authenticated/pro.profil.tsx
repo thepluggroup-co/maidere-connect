@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { authorizedFetch } from "@/lib/maideres-core-client";
-import { maFichePrestataire, CATEGORIES } from "@/lib/maideres-api";
+import { maFichePrestataire, listerCategories } from "@/lib/maideres-api";
 import { VILLES, quartiersParVille, type Ville } from "@/lib/maidere";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,7 @@ const STATUT_LABEL: Record<string, string> = {
 function ProfilPro() {
   const queryClient = useQueryClient();
   const [nom, setNom] = useState("");
-  const [metier, setMetier] = useState(CATEGORIES[0]!);
+  const [metierId, setMetierId] = useState("");
   const [bio, setBio] = useState("");
   const [ville, setVille] = useState<Ville>("Douala");
   const [quartier, setQuartier] = useState("");
@@ -31,6 +31,11 @@ function ProfilPro() {
   const [telephone, setTelephone] = useState("");
   const [disponible, setDisponible] = useState(true);
   const [enregistrement, setEnregistrement] = useState(false);
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: listerCategories,
+  });
 
   const { data } = useQuery({
     queryKey: ["ma-fiche-pro"],
@@ -40,7 +45,9 @@ function ProfilPro() {
   useEffect(() => {
     if (!data) return;
     setNom(data.nom);
-    setMetier(data.metier ?? CATEGORIES[0]!);
+    setMetierId(data.metier_id ?? "");
+    // Si la fiche n'a encore aucun métier et que les catégories sont chargées,
+    // pré-sélectionne la première plutôt que de laisser le select vide.
     setBio(data.bio ?? "");
     if (data.ville) setVille(data.ville as Ville);
     setQuartier(data.quartier ?? "");
@@ -62,14 +69,16 @@ function ProfilPro() {
         ? await authorizedFetch(`/api/prestataires/${data.id}`, {
             method: "PATCH",
             body: JSON.stringify({
-              nom, telephone, quartier: quartier || null, ville, metier, bio: bio || null,
+              nom, telephone, quartier: quartier || null, ville,
+              metier_id: metierId || null, bio: bio || null,
               disponible, zones_couverture: zonesCouverture,
             }),
           })
         : await authorizedFetch("/api/prestataires", {
             method: "POST",
             body: JSON.stringify({
-              nom, telephone, quartier: quartier || null, ville, metier, bio: bio || null,
+              nom, telephone, quartier: quartier || null, ville,
+              metier_id: metierId || null, bio: bio || null,
               zones_couverture: zonesCouverture,
             }),
           });
@@ -111,13 +120,14 @@ function ProfilPro() {
             <Label htmlFor="metier">Métier</Label>
             <select
               id="metier"
-              value={metier}
-              onChange={(e) => setMetier(e.target.value)}
+              value={metierId}
+              onChange={(e) => setMetierId(e.target.value)}
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
             >
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+              <option value="">—</option>
+              {(categories ?? []).map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.libelle}
                 </option>
               ))}
             </select>

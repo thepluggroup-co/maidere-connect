@@ -62,7 +62,7 @@ function FichePrestataire() {
               </span>
             )}
           </div>
-          <p className="mt-1 text-sm text-primary">{p.metier}</p>
+          <p className="mt-1 text-sm text-primary">{p.metier_libelle}</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {p.quartier ? `${p.quartier}, ` : ""}
             {p.ville}

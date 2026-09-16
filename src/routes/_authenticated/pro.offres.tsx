@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { authorizedFetch } from "@/lib/maideres-core-client";
-import { maFichePrestataire, CATEGORIES, type Offre } from "@/lib/maideres-api";
+import { maFichePrestataire, listerCategories, type Offre } from "@/lib/maideres-api";
 import { xof } from "@/lib/maidere";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,12 +24,21 @@ async function verifierOk(res: Response, contexte: string) {
 function OffresPro() {
   const queryClient = useQueryClient();
   const [titre, setTitre] = useState("");
-  const [categorie, setCategorie] = useState(CATEGORIES[0]!);
+  const [categorie, setCategorie] = useState("");
   const [description, setDescription] = useState("");
   const [prestations, setPrestations] = useState("");
   const [prix, setPrix] = useState(10000);
   const [unite, setUnite] = useState("forfait");
   const [delai, setDelai] = useState(24);
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: listerCategories,
+  });
+
+  useEffect(() => {
+    if (categories?.length && !categorie) setCategorie(categories[0]!.libelle);
+  }, [categories, categorie]);
 
   const { data } = useQuery({
     queryKey: ["mes-offres"],
@@ -144,9 +153,9 @@ function OffresPro() {
               onChange={(e) => setCategorie(e.target.value)}
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
             >
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+              {(categories ?? []).map((c) => (
+                <option key={c.id} value={c.libelle}>
+                  {c.libelle}
                 </option>
               ))}
             </select>

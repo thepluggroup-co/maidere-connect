@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,19 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { VILLES, quartiersParVille, type Ville } from "@/lib/maidere";
 import { resoudreIdentitePourUtilisateur } from "@/lib/maideres-core-client";
+import { listerCategoriesPubliques } from "@/lib/maideres-api";
 
 type Props = { role: "client" | "prestataire" };
-
-const METIERS = [
-  "Plomberie",
-  "Bricolage & rénovation",
-  "Restauration",
-  "Hébergement",
-  "Shopping",
-  "Transport",
-  "Immobilier",
-  "Couture",
-];
 
 export function AuthCard({ role }: Props) {
   const navigate = useNavigate();
@@ -32,7 +23,13 @@ export function AuthCard({ role }: Props) {
   const [telephone, setTelephone] = useState("");
   const [ville, setVille] = useState<Ville>("Douala");
   const [quartier, setQuartier] = useState("");
-  const [metier, setMetier] = useState(METIERS[0]!);
+  const [metierId, setMetierId] = useState("");
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories-publiques"],
+    queryFn: listerCategoriesPubliques,
+    enabled: role === "prestataire",
+  });
 
   const destination = role === "prestataire" ? "/pro" : "/espace";
   const estPro = role === "prestataire";
@@ -55,14 +52,14 @@ export function AuthCard({ role }: Props) {
           email,
           password: motDePasse,
           options: {
-            emailRedirectTo: `${window.location.origin}${destination}`,
+            emailRedirectTo: `${window.location.origin}/auth/confirmation`,
             data: {
               nom_complet: nom,
               telephone,
               ville,
               quartier,
               role,
-              ...(estPro ? { metier } : {}),
+              ...(estPro ? { metier_id: metierId } : {}),
             },
           },
         });
@@ -168,13 +165,14 @@ export function AuthCard({ role }: Props) {
                     <Label htmlFor="metier">Métier principal</Label>
                     <select
                       id="metier"
-                      value={metier}
-                      onChange={(e) => setMetier(e.target.value)}
+                      value={metierId}
+                      onChange={(e) => setMetierId(e.target.value)}
                       className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                     >
-                      {METIERS.map((m) => (
-                        <option key={m} value={m}>
-                          {m}
+                      <option value="">—</option>
+                      {(categories ?? []).map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.libelle}
                         </option>
                       ))}
                     </select>

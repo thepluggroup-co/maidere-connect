@@ -1,8 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { ArrowLeft, Mail, MapPin, Phone } from "lucide-react";
-
-import logo from "@/assets/maideres-logo.asset.json";
+import logo from "@/assets/logo-icon-real.png";
 
 /**
  * Enveloppe commune des pages informatives (À propos, FAQ, Contact, CGU).
@@ -22,7 +21,7 @@ export function PageShell({
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
           <Link to="/" className="flex min-w-0 items-center gap-3">
             <img
-              src={logo.url}
+              src={logo}
               alt="Logo MAIDERES"
               width={44}
               height={44}
@@ -69,7 +68,7 @@ export function PageShell({
           <div>
             <div className="flex items-center gap-3">
               <img
-                src={logo.url}
+                src={logo}
                 alt="Logo MAIDERES"
                 width={40}
                 height={40}
