@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
 import {
@@ -23,6 +23,8 @@ import {
 
 import logo from "@/assets/logo-icon-real.png";
 import heroImage from "@/assets/hero-maidere.jpg";
+import { DynamicHubHeader } from "@/components/maideres/DynamicHubHeader";
+import { SecondaryButton } from "@/components/maideres/SecondaryButton";
 import {
   URGENCES,
   VILLES,
@@ -70,6 +72,21 @@ const services = [
   { name: "Immobilier", icon: Building2, tint: "bg-primary" },
   { name: "Couture", icon: Scissors, tint: "bg-brand-magenta" },
 ];
+
+// Regroupement "moments de vie" (brief Concierge MVP) — proposé à partir
+// des 8 services réels ci-dessus, pas de nouvelles catégories inventées.
+// À valider avec le marketing, surtout "Style" qui ne contient qu'un seul
+// service faute d'une vraie catégorie beauté dans l'offre actuelle.
+const momentsDeVie = [
+  {
+    id: "installer",
+    label: "S'installer",
+    noms: ["Immobilier", "Plomberie", "Bricolage & Rénovation"],
+  },
+  { id: "quotidien", label: "Quotidien", noms: ["Restauration", "Shopping", "Hébergement"] },
+  { id: "mobilite", label: "Mobilité", noms: ["Transport"] },
+  { id: "style", label: "Style", noms: ["Couture"] },
+] as const;
 
 const trust = [
   {
@@ -392,6 +409,72 @@ function CommissionDemo() {
   );
 }
 
+function HubContextuel() {
+  const navigate = useNavigate();
+  const [intention, setIntention] = useState("");
+  const [momentActif, setMomentActif] = useState<(typeof momentsDeVie)[number]["id"] | null>(null);
+
+  function rechercher(e: React.FormEvent) {
+    e.preventDefault();
+    if (!intention.trim()) return;
+    navigate({ to: "/prestataires", search: { q: intention.trim() } });
+  }
+
+  return (
+    <section id="hub" className="mx-auto max-w-6xl px-5 py-12 lg:py-16">
+      {/* Pas de géoloc réelle branchée pour l'instant → ville=null, le
+          composant gère déjà ce cas (message d'invite plutôt qu'une
+          fausse ville). */}
+      <DynamicHubHeader ville={null} />
+
+      <form onSubmit={rechercher} className="mt-6 flex flex-col gap-3 sm:flex-row">
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={intention}
+            onChange={(e) => setIntention(e.target.value)}
+            placeholder="Je viens d'arriver, je cherche internet…"
+            aria-label="Décrivez votre besoin"
+            className="w-full rounded-full border border-input bg-background py-3 pl-11 pr-4 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+        </div>
+        <SecondaryButton type="submit" className="rounded-full px-6 py-3">
+          Rechercher
+        </SecondaryButton>
+      </form>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {momentsDeVie.map((m) => (
+          <button
+            key={m.id}
+            type="button"
+            onClick={() => setMomentActif(momentActif === m.id ? null : m.id)}
+            className={`rounded-2xl border p-4 text-left transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-card)] ${
+              momentActif === m.id ? "border-primary bg-primary/5" : "border-border bg-card"
+            }`}
+          >
+            <p className="text-sm font-bold text-primary">{m.label}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{m.noms.join(" · ")}</p>
+          </button>
+        ))}
+      </div>
+
+      {momentActif && (
+        <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl bg-muted/70 px-4 py-3 text-xs text-muted-foreground">
+          <span>
+            {momentsDeVie.find((m) => m.id === momentActif)?.noms.join(", ")} — visible dans la
+            section « Nos services » ci-dessous.
+          </span>
+          <a href="#services" className="font-semibold text-primary hover:underline">
+            Voir <ArrowRight className="inline h-3 w-3" />
+          </a>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function Landing() {
   return (
     <div className="min-h-screen font-sans">
@@ -523,6 +606,8 @@ function Landing() {
             </div>
           </div>
         </section>
+
+        <HubContextuel />
 
         {/* Trust */}
         <section className="mx-auto max-w-6xl px-5 py-16 lg:py-20">

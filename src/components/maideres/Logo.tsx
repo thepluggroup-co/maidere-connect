@@ -21,7 +21,9 @@ import logoIcon from "@/assets/logo-icon-real.png";
 
 function warnIfTooSmall(size: number) {
   if (import.meta.env.DEV && size < 32) {
-    console.warn(`[Logo] taille ${size}px < 32px — sous la zone de protection minimale de la charte (écran).`);
+    console.warn(
+      `[Logo] taille ${size}px < 32px — sous la zone de protection minimale de la charte (écran).`,
+    );
   }
 }
 
@@ -46,7 +48,12 @@ interface LogoProps {
 
 const TAGLINE = "Tous les services près de chez vous";
 
-export function MaideresLogo({ size = 32, className, orientation = "horizontal", tagline = false }: LogoProps) {
+export function MaideresLogo({
+  size = 32,
+  className,
+  orientation = "horizontal",
+  tagline = false,
+}: LogoProps) {
   warnIfTooSmall(size);
   return (
     <span
@@ -59,7 +66,9 @@ export function MaideresLogo({ size = 32, className, orientation = "horizontal",
           <span className="text-[#A82D7E]">DERES</span>
         </span>
         {tagline && (
-          <span className="block text-[9px] font-semibold uppercase tracking-wider text-[#254C8C]">{TAGLINE}</span>
+          <span className="block text-[9px] font-semibold uppercase tracking-wider text-[#254C8C]">
+            {TAGLINE}
+          </span>
         )}
       </span>
     </span>

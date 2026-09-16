@@ -96,7 +96,10 @@ export function ProviderCard({
       {raisons && raisons.length > 0 && (
         <ul className="flex flex-wrap gap-1.5" aria-label="Pourquoi ce prestataire">
           {raisons.map((r) => (
-            <li key={r} className="rounded-full bg-muted px-2 py-0.5 text-[10px] text-muted-foreground">
+            <li
+              key={r}
+              className="rounded-full bg-muted px-2 py-0.5 text-[10px] text-muted-foreground"
+            >
               {r}
             </li>
           ))}

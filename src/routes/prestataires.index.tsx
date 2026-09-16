@@ -7,6 +7,10 @@ import { Input } from "@/components/ui/input";
 import { ProviderCard } from "@/components/maideres/ProviderCard";
 
 export const Route = createFileRoute("/prestataires/")({
+  validateSearch: (search: Record<string, unknown>): { q?: string } => {
+    const raw = search["q"];
+    return typeof raw === "string" && raw.trim() ? { q: raw } : {};
+  },
   head: () => ({
     meta: [
       { title: "Trouver un prestataire vérifié — MAIDERES" },
@@ -27,10 +31,11 @@ export const Route = createFileRoute("/prestataires/")({
 
 function RecherchePublique() {
   const navigate = useNavigate();
+  const { q } = Route.useSearch();
   const [ville, setVille] = useState<Ville | "">("");
   const [quartier, setQuartier] = useState("");
   const [categorieId, setCategorieId] = useState("");
-  const [recherche, setRecherche] = useState("");
+  const [recherche, setRecherche] = useState(q ?? "");
 
   const { data: categories } = useQuery({
     queryKey: ["categories-publiques"],
