@@ -60,10 +60,19 @@ let _supabase: ReturnType<typeof createSupabaseClient> | undefined;
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
+// Le Proxy ci-dessous propage `receiver` (le Proxy lui-même) à Reflect.get.
+// Si un accesseur interne du SDK Supabase référence `this`, ce `this`
+// devient alors le Proxy plutôt que le vrai client — et si cet accesseur
+// relit une de ses propres propriétés via `this`, l'accès redéclenche le
+// `get` du Proxy, qui redéclenche le même accès : RangeError "Maximum call
+// stack size exceeded", observé précisément pendant signInWithPassword.
+// Fix : ne jamais transmettre `receiver`, et lier les méthodes au vrai
+// client pour que leur `this` reste correct une fois extraites du Proxy.
 export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>, {
-  get(_, prop, receiver) {
+  get(_, prop) {
     if (!_supabase) _supabase = createSupabaseClient();
-    return Reflect.get(_supabase, prop, receiver);
+    const value = Reflect.get(_supabase, prop);
+    return typeof value === 'function' ? value.bind(_supabase) : value;
   },
 });
 
