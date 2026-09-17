@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { authorizedFetch } from "@/lib/maideres-core-client";
-import type { Demande } from "@/lib/maideres-api";
+import { listerDemandes, type Demande } from "@/lib/maideres-api";
 
 export const Route = createFileRoute("/_authenticated/pro/demandes/")({
   component: GestionDemandesPro,
@@ -19,11 +18,7 @@ const STATUT_LABEL: Record<Demande["statut"], string> = {
 function GestionDemandesPro() {
   const { data, isLoading } = useQuery({
     queryKey: ["demandes-prestataire"],
-    queryFn: async () => {
-      const res = await authorizedFetch("/api/demandes");
-      if (!res.ok) throw new Error(`GET /api/demandes a échoué (${res.status})`);
-      return ((await res.json()) as { data: Demande[] }).data;
-    },
+    queryFn: listerDemandes,
     refetchInterval: 15000,
   });
 
