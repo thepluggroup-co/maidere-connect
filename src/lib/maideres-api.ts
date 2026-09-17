@@ -271,6 +271,11 @@ export async function chargerDemande(id: string): Promise<Demande> {
   return lireJson<Demande>(await authorizedFetch(`/api/demandes/${id}`), "GET /api/demandes/:id");
 }
 
+/** GET /api/demandes — sans filtre, scope automatiquement côté API selon l'identité (staff : tout ; client : ses demandes ; prestataire : celles qui lui ont été proposées). */
+export async function listerDemandes(): Promise<Demande[]> {
+  return lireJson<Demande[]>(await authorizedFetch("/api/demandes"), "GET /api/demandes");
+}
+
 export async function listerMatchings(filtres: { demande_id?: string } = {}): Promise<Matching[]> {
   const params = new URLSearchParams();
   if (filtres.demande_id) params.set("demande_id", filtres.demande_id);
