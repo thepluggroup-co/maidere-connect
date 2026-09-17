@@ -91,6 +91,11 @@ export function AuthCard({ role, redirectTo }: Props) {
         }
       }
     } catch (err) {
+      // Diagnostic temporaire (16/09/2026) : capturer la pile complète du
+      // RangeError "Maximum call stack size exceeded" observé en prod, pour
+      // localiser précisément où il se produit — à retirer une fois identifié.
+      console.error("[AuthCard] erreur de connexion/inscription :", err);
+      if (err instanceof Error && err.stack) console.error("[AuthCard] stack complète :\n" + err.stack);
       toast.error(err instanceof Error ? err.message : "Une erreur est survenue");
     } finally {
       setChargement(false);
