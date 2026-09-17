@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { List, Map as MapIcon } from "lucide-react";
 import { listerPrestataires, listerCategoriesPubliques } from "@/lib/maideres-api";
 import { VILLES, quartiersParVille, type Ville } from "@/lib/maidere";
 import { Input } from "@/components/ui/input";
 import { ProviderCard } from "@/components/maideres/ProviderCard";
+import { DiscoveryMap } from "@/components/maideres/DiscoveryMap";
 
 export const Route = createFileRoute("/prestataires/")({
   validateSearch: (search: Record<string, unknown>): { q?: string } => {
@@ -36,6 +38,7 @@ function RecherchePublique() {
   const [quartier, setQuartier] = useState("");
   const [categorieId, setCategorieId] = useState("");
   const [recherche, setRecherche] = useState(q ?? "");
+  const [vue, setVue] = useState<"liste" | "carte">("liste");
 
   const { data: categories } = useQuery({
     queryKey: ["categories-publiques"],
@@ -109,12 +112,35 @@ function RecherchePublique() {
           />
         </div>
 
+        <div className="mt-4 inline-flex rounded-full border border-border p-1">
+          <button
+            type="button"
+            onClick={() => setVue("liste")}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+              vue === "liste" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+            }`}
+          >
+            <List className="size-3.5" /> Liste
+          </button>
+          <button
+            type="button"
+            onClick={() => setVue("carte")}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+              vue === "carte" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+            }`}
+          >
+            <MapIcon className="size-3.5" /> Carte
+          </button>
+        </div>
+
         {isLoading ? (
           <p className="mt-8 text-sm text-muted-foreground">Chargement…</p>
         ) : (data?.length ?? 0) === 0 ? (
           <p className="mt-8 text-sm text-muted-foreground">
             Aucun prestataire ne correspond à cette recherche pour le moment.
           </p>
+        ) : vue === "carte" ? (
+          <DiscoveryMap prestataires={data!} ville={ville} className="mt-6" />
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {data!.map((p, i) => (
