@@ -16,14 +16,24 @@
  * passeport "à présenter" serait à ajouter sur la page de suivi
  * (espace.demandes.$id.tsx) une fois la demande matchée — pas fait ici,
  * hors scope de ce tunnel de création.
+ *
+ * Sélection directe d'une offre (?offre_id=&prestataire_id=, venu du
+ * bouton "Demander cette offre" sur une fiche prestataire) : pré-remplit
+ * l'étape 1 et transmet offre_id à la création — POST /api/demandes
+ * (MAIDERES-erp) propose alors automatiquement ce prestataire, sans
+ * attendre un dispatch staff. Pas d'API dédiée pour une offre isolée,
+ * donc on réutilise le paquet public de la fiche (déjà accessible sans
+ * auth) pour la retrouver.
  */
 import { useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { z } from "zod";
 import { toast } from "sonner";
 import { CheckCircle2 } from "lucide-react";
 import { authorizedFetch } from "@/lib/maideres-core-client";
-import { listerCategories, type Demande } from "@/lib/maideres-api";
+import { listerCategories, chargerFichePrestataire, type Demande } from "@/lib/maideres-api";
+import { xof } from "@/lib/maidere";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,6 +43,10 @@ import { ConciergeLoader } from "@/components/maideres/ConciergeLoader";
 import { DigitalPassport } from "@/components/maideres/DigitalPassport";
 
 export const Route = createFileRoute("/_authenticated/espace/demandes/nouvelle")({
+  validateSearch: z.object({
+    offre_id: z.string().uuid().optional(),
+    prestataire_id: z.string().uuid().optional(),
+  }),
   component: NouvelleDemande,
 });
 
@@ -46,6 +60,7 @@ const ETAPES = ["Besoin", "Validation", "Confirmation"] as const;
 
 function NouvelleDemande() {
   const navigate = useNavigate();
+  const { offre_id: offreId, prestataire_id: prestataireId } = Route.useSearch();
   const [etape, setEtape] = useState(0);
   const [categorieId, setCategorieId] = useState("");
   const [description, setDescription] = useState("");
@@ -53,10 +68,32 @@ function NouvelleDemande() {
   const [niveauUrgence, setNiveauUrgence] = useState<(typeof NIVEAUX)[number]["value"]>("urgent");
   const [dateSouhaitee, setDateSouhaitee] = useState("");
   const [demandeCreee, setDemandeCreee] = useState<Demande | null>(null);
+  const [descriptionPreremplie, setDescriptionPreremplie] = useState(false);
 
   const { data: categories } = useQuery({ queryKey: ["categories"], queryFn: listerCategories });
   const categorieLabel = categories?.find((c) => c.id === categorieId)?.libelle ?? categorieId;
   const niveauLabel = NIVEAUX.find((n) => n.value === niveauUrgence)?.label ?? niveauUrgence;
+
+  // Venu de "Demander cette offre" sur une fiche prestataire : pas d'API
+  // dédiée pour une offre isolée, donc on réutilise le même paquet public
+  // que la fiche (déjà accessible sans auth) et on retrouve l'offre dedans.
+  const { data: fiche } = useQuery({
+    queryKey: ["fiche-prestataire", prestataireId],
+    queryFn: () => chargerFichePrestataire(prestataireId!),
+    enabled: Boolean(prestataireId && offreId),
+  });
+  const offre = fiche?.offres.find((o) => o.id === offreId);
+
+  // Pré-remplissage une seule fois quand l'offre et la liste des catégories
+  // sont disponibles — sans bloquer la saisie si le client modifie ensuite.
+  if (offre && categories && !categorieId && !descriptionPreremplie) {
+    const categorieCorrespondante = categories.find(
+      (c) => c.libelle.toLowerCase() === offre.categorie.toLowerCase(),
+    );
+    if (categorieCorrespondante) setCategorieId(categorieCorrespondante.id);
+    setDescription(`${offre.titre}${offre.description ? ` — ${offre.description}` : ""}`);
+    setDescriptionPreremplie(true);
+  }
 
   const creer = useMutation({
     mutationFn: async () => {
@@ -68,6 +105,7 @@ function NouvelleDemande() {
           description,
           localisation: localisation || null,
           niveau_urgence: niveauUrgence,
+          ...(offre ? { offre_id: offre.id } : {}),
           ...(niveauUrgence === "planifie" && dateSouhaitee
             ? { date_souhaitee: new Date(dateSouhaitee).toISOString() }
             : {}),
@@ -95,9 +133,24 @@ function NouvelleDemande() {
       </Link>
       <h1 className="mt-4 font-display text-2xl font-bold text-foreground">Nouvelle demande</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Décrivez votre besoin — un conseiller MAIDERES vous met en relation avec un prestataire
-        vérifié.
+        {offre
+          ? "Cette demande sera envoyée directement au prestataire de l'offre choisie."
+          : "Décrivez votre besoin — un conseiller MAIDERES vous met en relation avec un prestataire vérifié."}
       </p>
+
+      {offreId && !offre && (
+        <p className="mt-3 rounded-xl bg-muted px-3 py-2 text-xs text-muted-foreground">
+          Chargement de l&apos;offre sélectionnée…
+        </p>
+      )}
+      {offre && (
+        <div className="mt-4 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+          <p className="text-sm font-semibold text-foreground">{offre.titre}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {offre.categorie} · {xof(offre.prix)} / {offre.unite_prix}
+          </p>
+        </div>
+      )}
 
       {/* Repères d'étapes */}
       <ol className="mt-6 flex items-center gap-2 text-xs font-semibold text-muted-foreground">
@@ -231,6 +284,12 @@ function NouvelleDemande() {
                 </dd>
               </div>
             )}
+            {offre && (
+              <div className="flex justify-between gap-4">
+                <dt className="text-muted-foreground">Prestataire</dt>
+                <dd className="text-right font-semibold text-foreground">{offre.titre}</dd>
+              </div>
+            )}
           </dl>
 
           {creer.isPending ? (
@@ -252,7 +311,11 @@ function NouvelleDemande() {
       {etape === 2 && demandeCreee && (
         <div className="mt-6 space-y-5">
           <ConciergeLoader
-            phrase="Un conseiller MAIDERES s'en occupe"
+            phrase={
+              offre
+                ? "Le prestataire va examiner votre demande"
+                : "Un conseiller MAIDERES s'en occupe"
+            }
             {...(niveauUrgence !== "planifie" ? { urgence: niveauUrgence } : {})}
           />
           <DigitalPassport

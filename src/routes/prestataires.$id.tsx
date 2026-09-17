@@ -127,6 +127,14 @@ function FichePrestataire() {
                       ))}
                     </ul>
                   )}
+                  <PrimaryButton className="mt-3 rounded-full px-4 py-1.5 text-xs" asChild>
+                    <Link
+                      to="/espace/demandes/nouvelle"
+                      search={{ offre_id: o.id, prestataire_id: p.id }}
+                    >
+                      Demander cette offre
+                    </Link>
+                  </PrimaryButton>
                 </div>
               ))}
             </div>
