@@ -20,6 +20,9 @@ dist-ssr
 .wrangler/
 .dev.vars
 
+# Vercel
+.vercel
+
 # Environnement (voir .env.example) — ne jamais committer de vraies clés
 .env
 .env.local
