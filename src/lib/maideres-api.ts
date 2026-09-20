@@ -25,6 +25,10 @@ export type Prestataire = {
   zones_couverture: string[];
   note_moyenne: string;
   statut?: "en_attente" | "actif" | "suspendu";
+  // photo_couverture : présent uniquement sur GET /api/public/prestataires
+  // (liste de recherche) — la réalisation publiée la plus récente, servant
+  // de vignette. Absent des autres endpoints (fiche détail, self-service).
+  photo_couverture?: string | null;
 };
 
 // `publie`/`created_at` : absents de la réponse publique (GET /api/public/*,
