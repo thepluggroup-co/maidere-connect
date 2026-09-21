@@ -23,7 +23,6 @@ function LayoutPro() {
       liens={[
         { to: "/pro", label: "Tableau de bord" },
         { to: "/pro/demandes", label: "Gestion de demandes" },
-        { to: "/pro/interventions", label: "Mes interventions" },
         { to: "/pro/offres", label: "Mes offres" },
         { to: "/pro/galerie", label: "Galerie" },
         { to: "/pro/avis", label: "Avis reçus" },

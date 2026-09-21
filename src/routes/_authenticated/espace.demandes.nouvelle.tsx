@@ -19,9 +19,11 @@
  *
  * Sélection directe d'une offre (?offre_id=&prestataire_id=, venu du
  * bouton "Demander cette offre" sur une fiche prestataire) : pré-remplit
- * l'étape 1 et transmet offre_id à la création — POST /api/demandes
- * (MAIDERES-erp) propose alors automatiquement ce prestataire, sans
- * attendre un dispatch staff. Pas d'API dédiée pour une offre isolée,
+ * l'étape 1 et transmet offre_id à la création. Depuis le 17/09/2026,
+ * POST /api/demandes (MAIDERES-erp) NE propose plus automatiquement ce
+ * prestataire : la demande passe par le dispatch staff comme toute autre
+ * demande, offre_id sert seulement de trace de l'intention du client pour
+ * le staff au moment du dispatch. Pas d'API dédiée pour une offre isolée,
  * donc on réutilise le paquet public de la fiche (déjà accessible sans
  * auth) pour la retrouver.
  */
@@ -134,7 +136,7 @@ function NouvelleDemande() {
       <h1 className="mt-4 font-display text-2xl font-bold text-foreground">Nouvelle demande</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         {offre
-          ? "Cette demande sera envoyée directement au prestataire de l'offre choisie."
+          ? "Votre choix de prestataire est transmis à notre équipe, qui valide la mise en relation."
           : "Décrivez votre besoin — un conseiller MAIDERES vous met en relation avec un prestataire vérifié."}
       </p>
 
@@ -313,7 +315,7 @@ function NouvelleDemande() {
           <ConciergeLoader
             phrase={
               offre
-                ? "Le prestataire va examiner votre demande"
+                ? "Un conseiller MAIDERES valide votre choix de prestataire"
                 : "Un conseiller MAIDERES s'en occupe"
             }
             {...(niveauUrgence !== "planifie" ? { urgence: niveauUrgence } : {})}
