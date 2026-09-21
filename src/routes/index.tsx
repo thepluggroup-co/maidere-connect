@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
+import { chargerTarifsIndicatifs } from "@/lib/maideres-api";
 
 import {
   Droplets,
@@ -413,6 +415,11 @@ function HubContextuel() {
   const navigate = useNavigate();
   const [intention, setIntention] = useState("");
   const [momentActif, setMomentActif] = useState<(typeof momentsDeVie)[number]["id"] | null>(null);
+  const { data: tarifs } = useQuery({
+    queryKey: ["tarifs-indicatifs"],
+    queryFn: chargerTarifsIndicatifs,
+    staleTime: 5 * 60 * 1000,
+  });
 
   function rechercher(e: React.FormEvent) {
     e.preventDefault();
@@ -443,6 +450,16 @@ function HubContextuel() {
           Rechercher
         </SecondaryButton>
       </form>
+
+      {tarifs && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          Nos prestataires vérifiés interviennent en général entre{" "}
+          <span className="font-semibold text-foreground">
+            {tarifs.min.toLocaleString("fr-FR")} et {tarifs.max.toLocaleString("fr-FR")} FCFA
+          </span>{" "}
+          selon l'intervention — tarifs affichés par les prestataires eux-mêmes.
+        </p>
+      )}
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {momentsDeVie.map((m) => (

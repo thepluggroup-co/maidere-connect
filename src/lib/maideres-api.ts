@@ -246,6 +246,14 @@ export async function listerPrestataires(filtres: {
   return lireJson<Prestataire[]>(res, "GET /api/public/prestataires");
 }
 
+export type TarifsIndicatifs = { min: number; max: number; echantillon: number };
+
+/** null si moins de 3 offres publiées en base — pas de fourchette plutôt qu'une fausse. */
+export async function chargerTarifsIndicatifs(): Promise<TarifsIndicatifs | null> {
+  const res = await publicFetch("/api/public/tarifs-indicatifs");
+  return lireJson<TarifsIndicatifs | null>(res, "GET /api/public/tarifs-indicatifs");
+}
+
 export async function chargerFichePrestataire(id: string): Promise<{
   prestataire: Prestataire | null;
   offres: Offre[];
