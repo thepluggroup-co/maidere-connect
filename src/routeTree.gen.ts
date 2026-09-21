@@ -30,7 +30,6 @@ import { Route as AuthenticatedEspaceRechercheRouteImport } from './routes/_auth
 import { Route as AuthenticatedProIndexRouteImport } from './routes/_authenticated/pro.index'
 import { Route as AuthenticatedProAvisRouteImport } from './routes/_authenticated/pro.avis'
 import { Route as AuthenticatedProGalerieRouteImport } from './routes/_authenticated/pro.galerie'
-import { Route as AuthenticatedProInterventionsRouteImport } from './routes/_authenticated/pro.interventions'
 import { Route as AuthenticatedProOffresRouteImport } from './routes/_authenticated/pro.offres'
 import { Route as AuthenticatedProProfilRouteImport } from './routes/_authenticated/pro.profil'
 import { Route as AuthenticatedEspaceDemandesIndexRouteImport } from './routes/_authenticated/espace.demandes.index'
@@ -147,12 +146,6 @@ const AuthenticatedProGalerieRoute = AuthenticatedProGalerieRouteImport.update({
   path: '/galerie',
   getParentRoute: () => AuthenticatedProRoute,
 } as any)
-const AuthenticatedProInterventionsRoute =
-  AuthenticatedProInterventionsRouteImport.update({
-    id: '/interventions',
-    path: '/interventions',
-    getParentRoute: () => AuthenticatedProRoute,
-  } as any)
 const AuthenticatedProOffresRoute = AuthenticatedProOffresRouteImport.update({
   id: '/offres',
   path: '/offres',
@@ -213,7 +206,6 @@ export interface FileRoutesByFullPath {
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/pro/avis': typeof AuthenticatedProAvisRoute
   '/pro/galerie': typeof AuthenticatedProGalerieRoute
-  '/pro/interventions': typeof AuthenticatedProInterventionsRoute
   '/pro/offres': typeof AuthenticatedProOffresRoute
   '/pro/profil': typeof AuthenticatedProProfilRoute
   '/espace/': typeof AuthenticatedEspaceIndexRoute
@@ -241,7 +233,6 @@ export interface FileRoutesByTo {
   '/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/pro/avis': typeof AuthenticatedProAvisRoute
   '/pro/galerie': typeof AuthenticatedProGalerieRoute
-  '/pro/interventions': typeof AuthenticatedProInterventionsRoute
   '/pro/offres': typeof AuthenticatedProOffresRoute
   '/pro/profil': typeof AuthenticatedProProfilRoute
   '/espace': typeof AuthenticatedEspaceIndexRoute
@@ -273,7 +264,6 @@ export interface FileRoutesById {
   '/_authenticated/espace/recherche': typeof AuthenticatedEspaceRechercheRoute
   '/_authenticated/pro/avis': typeof AuthenticatedProAvisRoute
   '/_authenticated/pro/galerie': typeof AuthenticatedProGalerieRoute
-  '/_authenticated/pro/interventions': typeof AuthenticatedProInterventionsRoute
   '/_authenticated/pro/offres': typeof AuthenticatedProOffresRoute
   '/_authenticated/pro/profil': typeof AuthenticatedProProfilRoute
   '/_authenticated/espace/': typeof AuthenticatedEspaceIndexRoute
@@ -305,7 +295,6 @@ export interface FileRouteTypes {
     | '/espace/recherche'
     | '/pro/avis'
     | '/pro/galerie'
-    | '/pro/interventions'
     | '/pro/offres'
     | '/pro/profil'
     | '/espace/'
@@ -333,7 +322,6 @@ export interface FileRouteTypes {
     | '/espace/recherche'
     | '/pro/avis'
     | '/pro/galerie'
-    | '/pro/interventions'
     | '/pro/offres'
     | '/pro/profil'
     | '/espace'
@@ -364,7 +352,6 @@ export interface FileRouteTypes {
     | '/_authenticated/espace/recherche'
     | '/_authenticated/pro/avis'
     | '/_authenticated/pro/galerie'
-    | '/_authenticated/pro/interventions'
     | '/_authenticated/pro/offres'
     | '/_authenticated/pro/profil'
     | '/_authenticated/espace/'
@@ -539,13 +526,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProGalerieRouteImport
       parentRoute: typeof AuthenticatedProRoute
     }
-    '/_authenticated/pro/interventions': {
-      id: '/_authenticated/pro/interventions'
-      path: '/interventions'
-      fullPath: '/pro/interventions'
-      preLoaderRoute: typeof AuthenticatedProInterventionsRouteImport
-      parentRoute: typeof AuthenticatedProRoute
-    }
     '/_authenticated/pro/offres': {
       id: '/_authenticated/pro/offres'
       path: '/offres'
@@ -627,7 +607,6 @@ const AuthenticatedEspaceRouteWithChildren =
 interface AuthenticatedProRouteChildren {
   AuthenticatedProAvisRoute: typeof AuthenticatedProAvisRoute
   AuthenticatedProGalerieRoute: typeof AuthenticatedProGalerieRoute
-  AuthenticatedProInterventionsRoute: typeof AuthenticatedProInterventionsRoute
   AuthenticatedProOffresRoute: typeof AuthenticatedProOffresRoute
   AuthenticatedProProfilRoute: typeof AuthenticatedProProfilRoute
   AuthenticatedProIndexRoute: typeof AuthenticatedProIndexRoute
@@ -638,7 +617,6 @@ interface AuthenticatedProRouteChildren {
 const AuthenticatedProRouteChildren: AuthenticatedProRouteChildren = {
   AuthenticatedProAvisRoute: AuthenticatedProAvisRoute,
   AuthenticatedProGalerieRoute: AuthenticatedProGalerieRoute,
-  AuthenticatedProInterventionsRoute: AuthenticatedProInterventionsRoute,
   AuthenticatedProOffresRoute: AuthenticatedProOffresRoute,
   AuthenticatedProProfilRoute: AuthenticatedProProfilRoute,
   AuthenticatedProIndexRoute: AuthenticatedProIndexRoute,

@@ -20,8 +20,8 @@
  * Sélection directe d'une offre (?offre_id=&prestataire_id=, venu du
  * bouton "Demander cette offre" sur une fiche prestataire) : pré-remplit
  * l'étape 1 et transmet offre_id à la création — POST /api/demandes
- * (MAIDERES-erp) propose alors automatiquement ce prestataire, sans
- * attendre un dispatch staff. Pas d'API dédiée pour une offre isolée,
+ * (MAIDERES-erp) l'enregistre comme préférence ; la demande entre d'abord
+ * dans l'ERP (statut 'nouvelle') et le staff MAIDERES dispatche. Pas d'API dédiée pour une offre isolée,
  * donc on réutilise le paquet public de la fiche (déjà accessible sans
  * auth) pour la retrouver.
  */
@@ -134,7 +134,7 @@ function NouvelleDemande() {
       <h1 className="mt-4 font-display text-2xl font-bold text-foreground">Nouvelle demande</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         {offre
-          ? "Cette demande sera envoyée directement au prestataire de l'offre choisie."
+          ? "Votre demande est d'abord transmise à MAIDERES : un conseiller la valide puis la propose au prestataire de l'offre choisie."
           : "Décrivez votre besoin — un conseiller MAIDERES vous met en relation avec un prestataire vérifié."}
       </p>
 
@@ -286,7 +286,7 @@ function NouvelleDemande() {
             )}
             {offre && (
               <div className="flex justify-between gap-4">
-                <dt className="text-muted-foreground">Prestataire</dt>
+                <dt className="text-muted-foreground">Offre souhaitée</dt>
                 <dd className="text-right font-semibold text-foreground">{offre.titre}</dd>
               </div>
             )}
@@ -313,7 +313,7 @@ function NouvelleDemande() {
           <ConciergeLoader
             phrase={
               offre
-                ? "Le prestataire va examiner votre demande"
+                ? "MAIDERES examine votre demande et la transmet au prestataire choisi"
                 : "Un conseiller MAIDERES s'en occupe"
             }
             {...(niveauUrgence !== "planifie" ? { urgence: niveauUrgence } : {})}
