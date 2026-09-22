@@ -79,6 +79,8 @@ export type Avis = {
   commentaire: string | null;
   reponse: string | null;
   created_at: string;
+  /** 'client' (avis existant, sur le prestataire) ou 'prestataire' (nouveau, sur le client). */
+  auteur: "client" | "prestataire";
 };
 
 export type CategorieService = { id: string; libelle: string; actif: boolean };
