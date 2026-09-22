@@ -25,6 +25,10 @@ export type Prestataire = {
   zones_couverture: string[];
   note_moyenne: string;
   statut?: "en_attente" | "actif" | "suspendu";
+  // photo_couverture : présent uniquement sur GET /api/public/prestataires
+  // (liste de recherche) — la réalisation publiée la plus récente, servant
+  // de vignette. Absent des autres endpoints (fiche détail, self-service).
+  photo_couverture?: string | null;
 };
 
 // `publie`/`created_at` : absents de la réponse publique (GET /api/public/*,
@@ -75,6 +79,8 @@ export type Avis = {
   commentaire: string | null;
   reponse: string | null;
   created_at: string;
+  /** 'client' (avis existant, sur le prestataire) ou 'prestataire' (nouveau, sur le client). */
+  auteur: "client" | "prestataire";
 };
 
 export type CategorieService = { id: string; libelle: string; actif: boolean };
@@ -242,6 +248,14 @@ export async function listerPrestataires(filtres: {
   return lireJson<Prestataire[]>(res, "GET /api/public/prestataires");
 }
 
+export type TarifsIndicatifs = { min: number; max: number; echantillon: number };
+
+/** null si moins de 3 offres publiées en base — pas de fourchette plutôt qu'une fausse. */
+export async function chargerTarifsIndicatifs(): Promise<TarifsIndicatifs | null> {
+  const res = await publicFetch("/api/public/tarifs-indicatifs");
+  return lireJson<TarifsIndicatifs | null>(res, "GET /api/public/tarifs-indicatifs");
+}
+
 export async function chargerFichePrestataire(id: string): Promise<{
   prestataire: Prestataire | null;
   offres: Offre[];
@@ -269,6 +283,11 @@ export function moyenne(avis: { note: number }[]): number {
 
 export async function chargerDemande(id: string): Promise<Demande> {
   return lireJson<Demande>(await authorizedFetch(`/api/demandes/${id}`), "GET /api/demandes/:id");
+}
+
+/** GET /api/demandes — sans filtre, scope automatiquement côté API selon l'identité (staff : tout ; client : ses demandes ; prestataire : celles qui lui ont été proposées). */
+export async function listerDemandes(): Promise<Demande[]> {
+  return lireJson<Demande[]>(await authorizedFetch("/api/demandes"), "GET /api/demandes");
 }
 
 export async function listerMatchings(filtres: { demande_id?: string } = {}): Promise<Matching[]> {

@@ -1,11 +1,18 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { List, Map as MapIcon } from "lucide-react";
 import { listerPrestataires, listerCategoriesPubliques } from "@/lib/maideres-api";
 import { VILLES, quartiersParVille, type Ville } from "@/lib/maidere";
 import { Input } from "@/components/ui/input";
+import { ProviderCard } from "@/components/maideres/ProviderCard";
+import { DiscoveryMap } from "@/components/maideres/DiscoveryMap";
 
 export const Route = createFileRoute("/prestataires/")({
+  validateSearch: (search: Record<string, unknown>): { q?: string } => {
+    const raw = search["q"];
+    return typeof raw === "string" && raw.trim() ? { q: raw } : {};
+  },
   head: () => ({
     meta: [
       { title: "Trouver un prestataire vérifié — MAIDERES" },
@@ -25,10 +32,13 @@ export const Route = createFileRoute("/prestataires/")({
 });
 
 function RecherchePublique() {
+  const navigate = useNavigate();
+  const { q } = Route.useSearch();
   const [ville, setVille] = useState<Ville | "">("");
   const [quartier, setQuartier] = useState("");
   const [categorieId, setCategorieId] = useState("");
-  const [recherche, setRecherche] = useState("");
+  const [recherche, setRecherche] = useState(q ?? "");
+  const [vue, setVue] = useState<"liste" | "carte">("liste");
 
   const { data: categories } = useQuery({
     queryKey: ["categories-publiques"],
@@ -102,36 +112,44 @@ function RecherchePublique() {
           />
         </div>
 
+        <div className="mt-4 inline-flex rounded-full border border-border p-1">
+          <button
+            type="button"
+            onClick={() => setVue("liste")}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+              vue === "liste" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+            }`}
+          >
+            <List className="size-3.5" /> Liste
+          </button>
+          <button
+            type="button"
+            onClick={() => setVue("carte")}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+              vue === "carte" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+            }`}
+          >
+            <MapIcon className="size-3.5" /> Carte
+          </button>
+        </div>
+
         {isLoading ? (
           <p className="mt-8 text-sm text-muted-foreground">Chargement…</p>
         ) : (data?.length ?? 0) === 0 ? (
           <p className="mt-8 text-sm text-muted-foreground">
             Aucun prestataire ne correspond à cette recherche pour le moment.
           </p>
+        ) : vue === "carte" ? (
+          <DiscoveryMap prestataires={data!} ville={ville} className="mt-6" />
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {data!.map((p) => (
-              <Link
+            {data!.map((p, i) => (
+              <ProviderCard
                 key={p.id}
-                to="/prestataires/$id"
-                params={{ id: p.id }}
-                className="rounded-2xl border border-border bg-card p-5 transition-shadow hover:shadow-md"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <h2 className="font-display font-semibold text-foreground">{p.nom}</h2>
-                  <span className="rounded-full bg-secondary/10 px-2 py-0.5 text-xs font-semibold text-secondary">
-                    Vérifié
-                  </span>
-                </div>
-                <p className="mt-1 text-sm text-primary">{p.metier_libelle}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {p.quartier ? `${p.quartier}, ` : ""}
-                  {p.ville}
-                </p>
-                {p.bio && (
-                  <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{p.bio}</p>
-                )}
-              </Link>
+                prestataire={p}
+                recommande={i === 0}
+                onVoirFiche={(id) => navigate({ to: "/prestataires/$id", params: { id } })}
+              />
             ))}
           </div>
         )}

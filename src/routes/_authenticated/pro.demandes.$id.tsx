@@ -18,7 +18,9 @@ import {
   INTERVENTION_TRANSITIONS,
   STATUT_INTERVENTION_LABEL,
   type StatutIntervention,
+  type Avis,
 } from "@/lib/maideres-api";
+import { authorizedFetch } from "@/lib/maideres-core-client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -26,6 +28,11 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/_authenticated/pro/demandes/$id")({
   component: DemandeProDetail,
 });
+
+async function lire<T>(res: Response, contexte: string): Promise<T> {
+  if (!res.ok) throw new Error(`${contexte} a échoué (${res.status})`);
+  return ((await res.json()) as { data: T }).data;
+}
 
 const MATCHING_LABEL: Record<string, string> = {
   propose: "Proposition en attente de votre réponse",
@@ -53,6 +60,8 @@ function DemandeProDetail() {
   const [motifEchec, setMotifEchec] = useState("");
   const [afficherRefus, setAfficherRefus] = useState(false);
   const [afficherEchec, setAfficherEchec] = useState(false);
+  const [noteClient, setNoteClient] = useState(5);
+  const [commentaireClient, setCommentaireClient] = useState("");
 
   const invalider = () => {
     void queryClient.invalidateQueries({ queryKey: ["pro-demande", id] });
@@ -170,6 +179,42 @@ function DemandeProDetail() {
     onSuccess: () => {
       toast.success("Intervention reportée.");
       void queryClient.invalidateQueries({ queryKey: ["pro-interventions", matching?.id] });
+    },
+    onError: mutationErreur,
+  });
+
+  // Avis prestataire→client (0036/0039 côté MAIDERES) — signal interne
+  // (limite rendez-vous manqués/adresses fantômes), jamais montré au client
+  // noté ni sur une fiche publique. filter(auteur==='prestataire') car le
+  // même endpoint peut aussi renvoyer l'avis du client sur ce matching.
+  const { data: avisClient } = useQuery({
+    queryKey: ["avis-matching-prestataire", matching?.id],
+    queryFn: async () => {
+      const res = await authorizedFetch(`/api/avis?matching_id=${matching!.id}`);
+      const rows = await lire<Avis[]>(res, "GET /api/avis");
+      return rows.find((a) => a.auteur === "prestataire") ?? null;
+    },
+    enabled: Boolean(matching && matching.statut === "realise"),
+  });
+
+  const publierAvisClient = useMutation({
+    mutationFn: async () => {
+      const res = await authorizedFetch("/api/avis", {
+        method: "POST",
+        body: JSON.stringify({
+          matching_id: matching!.id,
+          note: noteClient,
+          commentaire: commentaireClient || null,
+        }),
+      });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(body?.error || `Publication échouée (${res.status})`);
+      }
+    },
+    onSuccess: () => {
+      toast.success("Avis enregistré — merci.");
+      void queryClient.invalidateQueries({ queryKey: ["avis-matching-prestataire", matching?.id] });
     },
     onError: mutationErreur,
   });
@@ -369,6 +414,65 @@ function DemandeProDetail() {
                     ))}
                   </ul>
                 </details>
+              )}
+            </div>
+          )}
+
+          {matching.statut === "realise" && (
+            <div className="mt-4 border-t border-border pt-4">
+              {avisClient ? (
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    Votre avis sur ce client : {avisClient.note}/5
+                  </p>
+                  {avisClient.commentaire && (
+                    <p className="mt-1 text-sm text-muted-foreground">{avisClient.commentaire}</p>
+                  )}
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Non visible par le client — sert uniquement en interne.
+                  </p>
+                </div>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    publierAvisClient.mutate();
+                  }}
+                  className="space-y-3"
+                >
+                  <p className="text-sm font-semibold text-foreground">Notez ce client</p>
+                  <p className="text-xs text-muted-foreground">
+                    Ponctualité, adresse correcte, accueil — reste privé, jamais montré au client ni
+                    sur votre fiche publique.
+                  </p>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="note-client">Note</Label>
+                    <select
+                      id="note-client"
+                      value={noteClient}
+                      onChange={(e) => setNoteClient(Number(e.target.value))}
+                      className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                    >
+                      {[5, 4, 3, 2, 1].map((n) => (
+                        <option key={n} value={n}>
+                          {n}/5
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="com-client">Commentaire (facultatif)</Label>
+                    <Textarea
+                      id="com-client"
+                      rows={3}
+                      value={commentaireClient}
+                      onChange={(e) => setCommentaireClient(e.target.value)}
+                    />
+                  </div>
+                  <Button type="submit" size="sm" disabled={publierAvisClient.isPending}>
+                    {publierAvisClient.isPending ? "Envoi…" : "Enregistrer"}
+                  </Button>
+                </form>
               )}
             </div>
           )}

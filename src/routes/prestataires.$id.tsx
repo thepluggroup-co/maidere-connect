@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { ShieldCheck, MapPin } from "lucide-react";
 import { chargerFichePrestataire, moyenne } from "@/lib/maideres-api";
 import { xof } from "@/lib/maidere";
+import { PrimaryButton } from "@/components/maideres/PrimaryButton";
 
 export const Route = createFileRoute("/prestataires/$id")({
   head: () => ({
@@ -53,9 +55,12 @@ function FichePrestataire() {
         <header className="mt-4 rounded-3xl border border-border bg-card p-6">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="font-display text-2xl font-bold text-foreground">{p.nom}</h1>
-            <span className="rounded-full bg-secondary/10 px-2 py-0.5 text-xs font-semibold text-secondary">
-              Vérifié
-            </span>
+            {p.statut !== "en_attente" && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-etat-succes px-2 py-0.5 text-xs font-semibold text-etat-succes-fg">
+                <ShieldCheck className="size-3.5" aria-hidden="true" />
+                Réseau vérifié
+              </span>
+            )}
             {p.disponible && (
               <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
                 Disponible
@@ -63,11 +68,17 @@ function FichePrestataire() {
             )}
           </div>
           <p className="mt-1 text-sm text-primary">{p.metier_libelle}</p>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
+            <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
             {p.quartier ? `${p.quartier}, ` : ""}
             {p.ville}
             {data.avis.length > 0 && ` · ${note.toFixed(1)}/5 (${data.avis.length} avis)`}
           </p>
+          {p.zones_couverture.length > 0 && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Intervient aussi à : {p.zones_couverture.join(", ")}
+            </p>
+          )}
           {p.bio && <p className="mt-4 text-sm text-muted-foreground">{p.bio}</p>}
         </header>
 
@@ -116,6 +127,14 @@ function FichePrestataire() {
                       ))}
                     </ul>
                   )}
+                  <PrimaryButton className="mt-3 rounded-full px-4 py-1.5 text-xs" asChild>
+                    <Link
+                      to="/espace/demandes/nouvelle"
+                      search={{ offre_id: o.id, prestataire_id: p.id }}
+                    >
+                      Demander cette offre
+                    </Link>
+                  </PrimaryButton>
                 </div>
               ))}
             </div>
@@ -170,12 +189,9 @@ function FichePrestataire() {
           <p className="text-sm text-muted-foreground">
             Créez votre compte client pour laisser un avis et suivre vos prestataires favoris.
           </p>
-          <Link
-            to="/auth/client"
-            className="mt-3 inline-flex rounded-full bg-secondary px-5 py-2 text-sm font-semibold text-secondary-foreground"
-          >
-            Espace client
-          </Link>
+          <PrimaryButton className="mt-3 rounded-full px-5" asChild>
+            <Link to="/auth/client">Espace client</Link>
+          </PrimaryButton>
         </div>
       </div>
     </div>
